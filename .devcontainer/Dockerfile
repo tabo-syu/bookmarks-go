@@ -6,7 +6,8 @@ FROM mcr.microsoft.com/devcontainers/go:0-1.19-bullseye
 
 # [Optional] Uncomment the next lines to use go get to install anything else you need
 USER vscode
-RUN go install github.com/cosmtrek/air@latest
+RUN go install github.com/cosmtrek/air@latest \
+    && go install github.com/kyleconroy/sqlc/cmd/sqlc@latest
 USER root
 
 # [Optional] Uncomment this line to install global node packages.
