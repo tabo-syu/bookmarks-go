@@ -8,8 +8,8 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
-func NewSQLClient() (*sql.DB, error) {
-	return sql.Open("pgx", fmt.Sprintf(
+func NewSQLHandler() (*sql.DB, error) {
+	handler, err := sql.Open("pgx", fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable Timezone=%s",
 		"db",
 		os.Getenv("POSTGRES_USER"),
@@ -18,4 +18,13 @@ func NewSQLClient() (*sql.DB, error) {
 		os.Getenv("POSTGRES_PORT"),
 		os.Getenv("POSTGRES_TIMEZONE"),
 	))
+	if err != nil {
+		return nil, fmt.Errorf("incorrect DB connection information: %w", err)
+	}
+
+	if err := handler.Ping(); err != nil {
+		return nil, fmt.Errorf("DB Ping failed: %w", err)
+	}
+
+	return handler, nil
 }

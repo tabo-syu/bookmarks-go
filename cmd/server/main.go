@@ -2,57 +2,42 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
+	"net/http"
+	"os/signal"
+	"syscall"
+	"time"
 
-	"github.com/google/uuid"
 	"github.com/tabo-syu/bookmarks/infrastructures"
-	"github.com/tabo-syu/bookmarks/sqlc"
+	"github.com/tabo-syu/bookmarks/infrastructures/sqlc"
 )
 
 func main() {
-	if err := run(); err != nil {
-		log.Fatalf(err.Error())
-	}
-}
-
-func run() error {
-	db, err := infrastructures.NewSQLClient()
+	db, err := infrastructures.NewSQLHandler()
+	sqlc := sqlc.New(db)
 	if err != nil {
-		log.Fatalf(err.Error())
+		log.Fatal("DB connection failed", err)
 	}
 
-	q := sqlc.New(db)
-	ctx := context.Background()
-	fmt.Println("--- ListBookmarks() ---")
-	bookmarks, err := q.ListBookmarks(ctx)
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	for _, bookmark := range bookmarks {
-		fmt.Println("=======")
-		fmt.Println(bookmark.ID)
-		fmt.Println(bookmark.Url)
-		fmt.Println(bookmark.Description)
+	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
+	defer stop()
+
+	server := infrastructures.NewServer(sqlc)
+	go func() {
+		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("listen: %s\n", err)
+		}
+	}()
+
+	<-ctx.Done()
+	stop()
+	log.Println("shutting down gracefully, press Ctrl+C again to force")
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := server.Shutdown(ctx); err != nil {
+		log.Fatal("Server forced to shutdown: ", err)
 	}
 
-	id, err := uuid.Parse("92449b60-90ac-4161-9be1-200b07854a46")
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	fmt.Println("")
-	fmt.Println("--- ListBookmarks() ---")
-	res, err := q.FindBookmarksByTags(ctx, []uuid.UUID{id})
-	if err != nil {
-		log.Fatalf(err.Error())
-	}
-	for _, bookmark := range res {
-		fmt.Println("=======")
-		fmt.Println(bookmark.ID)
-		fmt.Println(bookmark.Title)
-		fmt.Println(bookmark.Description)
-		fmt.Println(bookmark.Url)
-	}
-
-	return nil
+	log.Println("Server exiting")
 }

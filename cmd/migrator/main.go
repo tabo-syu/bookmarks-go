@@ -20,7 +20,7 @@ func main() {
 }
 
 func run() error {
-	db, err := infrastructures.NewSQLClient()
+	db, err := infrastructures.NewSQLHandler()
 	if err != nil {
 		return err
 	}
@@ -31,12 +31,12 @@ func run() error {
 		return err
 	}
 
-	schema, err := os.Open(filepath.Join(wd, "sqlc", "schema.sql"))
+	schema, err := os.Open(filepath.Join(wd, "infrastructures", "sqlc", "schema.sql"))
 	if err != nil {
 		return err
 	}
 	defer schema.Close()
-	seed, err := os.Open(filepath.Join(wd, "sqlc", "seed.sql"))
+	seed, err := os.Open(filepath.Join(wd, "cmd", "migrator", "seed.sql"))
 	if err != nil {
 		return err
 	}
