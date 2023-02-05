@@ -1,16 +1,16 @@
 INSERT INTO bookmarks 
-  (id, url) 
+  (id, url, title, description, thumbnail) 
 VALUES 
-  ('e6fbaf41-0688-41d4-aaa0-4e0c2cfba6a8', 'https://tabo-syu.com'),
-  ('c77c048a-5c89-4da5-9fb5-b7e54dd00df4', 'https://twitter.com/tabo_web'),
-  ('abfbce21-b123-4345-ba5c-0f957e7a28e6', 'https://github.com/tabo-syu');
+  ('e6fbaf41-0688-41d4-aaa0-4e0c2cfba6a8', 'https://tabo-syu.com', 'Blog', 'My Blog', 'https://tabo-syu.com/ogp.jpg'),
+  ('c77c048a-5c89-4da5-9fb5-b7e54dd00df4', 'https://twitter.com/tabo_web', 'Twitter', 'My Twitter account.', 'https://pbs.twimg.com/profile_images/1137666788357857281/-KUgp8-e_400x400.jpg'),
+  ('abfbce21-b123-4345-ba5c-0f957e7a28e6', 'https://github.com/tabo-syu', 'GitHub', 'My GitHub account.', 'https://avatars.githubusercontent.com/u/45633620?v=4?s=400');
 
 INSERT INTO tags
-  (id, name)
+  (id, name, color)
 VALUES
-  ('92449b60-90ac-4161-9be1-200b07854a46', '技術'),
-  ('c84cbdf8-58c3-4a39-88be-921264daa8d2', '趣味'),
-  ('baa234d5-8c65-4a32-912e-224752be823c', 'その他');
+  ('92449b60-90ac-4161-9be1-200b07854a46', '技術', '000000'),
+  ('c84cbdf8-58c3-4a39-88be-921264daa8d2', '趣味', 'ffffff'),
+  ('baa234d5-8c65-4a32-912e-224752be823c', 'その他', '123456');
 
 INSERT INTO comments
   (bookmark_id, comment)

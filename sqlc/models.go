@@ -11,36 +11,35 @@ import (
 )
 
 type Bookmark struct {
-	ID        uuid.UUID
-	Url       string
-	CreatedAt time.Time
-	UpdatedAt time.Time
-}
-
-type BookmarkHasComment struct {
-	BookmarkID uuid.NullUUID
-	TagID      uuid.NullUUID
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID          uuid.UUID
+	Url         string
+	Title       string
+	Description string
+	Thumbnail   string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type BookmarkHasTag struct {
-	BookmarkID uuid.NullUUID
-	TagID      uuid.NullUUID
+	ID         uuid.UUID
+	BookmarkID uuid.UUID
+	TagID      uuid.UUID
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }
 
 type Comment struct {
-	ID        uuid.NullUUID
-	Comment   string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID         uuid.UUID
+	BookmarkID uuid.UUID
+	Comment    string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type Tag struct {
 	ID        uuid.UUID
 	Name      string
+	Color     string
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
