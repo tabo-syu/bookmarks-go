@@ -21,10 +21,10 @@ VALUES
 `
 
 type CreateBookmarkParams struct {
-	Url         string
-	Title       string
-	Description string
-	Thumbnail   string
+	Url         string `json:"url"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	Thumbnail   string `json:"thumbnail"`
 }
 
 func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) error {
@@ -105,13 +105,13 @@ ORDER BY
 `
 
 type FindBookmarksByTagsRow struct {
-	ID          uuid.NullUUID
-	Url         sql.NullString
-	Title       sql.NullString
-	Description sql.NullString
-	Thumbnail   sql.NullString
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
+	ID          uuid.NullUUID  `json:"id"`
+	Url         sql.NullString `json:"url"`
+	Title       sql.NullString `json:"title"`
+	Description sql.NullString `json:"description"`
+	Thumbnail   sql.NullString `json:"thumbnail"`
+	CreatedAt   sql.NullTime   `json:"created_at"`
+	UpdatedAt   sql.NullTime   `json:"updated_at"`
 }
 
 func (q *Queries) FindBookmarksByTags(ctx context.Context, ids []uuid.UUID) ([]FindBookmarksByTagsRow, error) {
