@@ -60,7 +60,7 @@ func (q *Queries) FindBookmarks(ctx context.Context, ids []uuid.UUID) ([]Bookmar
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Bookmark
+	items := []Bookmark{}
 	for rows.Next() {
 		var i Bookmark
 		if err := rows.Scan(
@@ -120,7 +120,7 @@ func (q *Queries) FindBookmarksByTags(ctx context.Context, ids []uuid.UUID) ([]F
 		return nil, err
 	}
 	defer rows.Close()
-	var items []FindBookmarksByTagsRow
+	items := []FindBookmarksByTagsRow{}
 	for rows.Next() {
 		var i FindBookmarksByTagsRow
 		if err := rows.Scan(
@@ -166,7 +166,7 @@ func (q *Queries) FindCommentsByBookmark(ctx context.Context, ids []uuid.UUID) (
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Comment
+	items := []Comment{}
 	for rows.Next() {
 		var i Comment
 		if err := rows.Scan(
@@ -210,7 +210,7 @@ func (q *Queries) ListBookmarks(ctx context.Context) ([]Bookmark, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Bookmark
+	items := []Bookmark{}
 	for rows.Next() {
 		var i Bookmark
 		if err := rows.Scan(

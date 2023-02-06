@@ -1,10 +1,13 @@
 version: "2"
 sql:
   - engine: "postgresql"
-    queries: "./infrastructures/sqlc/query.sql"
-    schema: "./infrastructures/sqlc/schema.sql"
+    queries: "./sqlc/query.sql"
+    schema: "./sqlc/schema.sql"
     gen:
       go:
         package: "sqlc"
-        out: "./infrastructures/sqlc"
+        out: "./sqlc"
+        sql_package: "pgx/v5"
         emit_json_tags: true
+        emit_interface: true
+        emit_empty_slices: true

@@ -31,7 +31,7 @@ func run() error {
 		return err
 	}
 
-	schema, err := os.Open(filepath.Join(wd, "infrastructures", "sqlc", "schema.sql"))
+	schema, err := os.Open(filepath.Join(wd, "sqlc", "schema.sql"))
 	if err != nil {
 		return err
 	}
