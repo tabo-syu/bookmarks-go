@@ -11,35 +11,34 @@ import (
 )
 
 type Bookmark struct {
-	ID          uuid.UUID `json:"id"`
-	Url         string    `json:"url"`
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Thumbnail   string    `json:"thumbnail"`
-	CreatedAt   time.Time `json:"created_at"`
-	UpdatedAt   time.Time `json:"updated_at"`
+	ID          uuid.UUID
+	Url         string
+	Title       string
+	Description string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
 type BookmarkHasTag struct {
-	ID         uuid.UUID `json:"id"`
-	BookmarkID uuid.UUID `json:"bookmark_id"`
-	TagID      uuid.UUID `json:"tag_id"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	ID         uuid.UUID
+	BookmarkID uuid.UUID
+	TagID      uuid.UUID
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type Comment struct {
-	ID         uuid.UUID `json:"id"`
-	BookmarkID uuid.UUID `json:"bookmark_id"`
-	Comment    string    `json:"comment"`
-	CreatedAt  time.Time `json:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at"`
+	ID         uuid.UUID
+	BookmarkID uuid.UUID
+	Comment    string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type Tag struct {
-	ID        uuid.UUID `json:"id"`
-	Name      string    `json:"name"`
-	Color     string    `json:"color"`
-	CreatedAt time.Time `json:"created_at"`
-	UpdatedAt time.Time `json:"updated_at"`
+	ID        uuid.UUID
+	Name      string
+	Color     string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

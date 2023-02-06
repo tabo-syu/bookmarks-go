@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/tabo-syu/bookmarks/infrastructures"
-	"github.com/tabo-syu/bookmarks/infrastructures/sqlc"
+	"github.com/tabo-syu/bookmarks/sqlc"
 )
 
 func main() {

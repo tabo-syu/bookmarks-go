@@ -13,28 +13,32 @@ import (
 	"github.com/lib/pq"
 )
 
-const createBookmark = `-- name: CreateBookmark :exec
+const createBookmark = `-- name: CreateBookmark :one
 INSERT INTO bookmarks
-  (url, title, description, thumbnail)
+  (url, title, description)
 VALUES
-  ($1, $2, $3, $4)
+  ($1, $2, $3)
+RETURNING id, url, title, description, created_at, updated_at
 `
 
 type CreateBookmarkParams struct {
-	Url         string `json:"url"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	Thumbnail   string `json:"thumbnail"`
+	Url         string
+	Title       string
+	Description string
 }
 
-func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) error {
-	_, err := q.db.ExecContext(ctx, createBookmark,
-		arg.Url,
-		arg.Title,
-		arg.Description,
-		arg.Thumbnail,
+func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmark, error) {
+	row := q.db.QueryRowContext(ctx, createBookmark, arg.Url, arg.Title, arg.Description)
+	var i Bookmark
+	err := row.Scan(
+		&i.ID,
+		&i.Url,
+		&i.Title,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
 	)
-	return err
+	return i, err
 }
 
 const findBookmarks = `-- name: FindBookmarks :many
@@ -43,7 +47,6 @@ SELECT
   url,
   title,
   description,
-  thumbnail,
   created_at,
   updated_at
 FROM
@@ -68,7 +71,6 @@ func (q *Queries) FindBookmarks(ctx context.Context, ids []uuid.UUID) ([]Bookmar
 			&i.Url,
 			&i.Title,
 			&i.Description,
-			&i.Thumbnail,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -91,7 +93,6 @@ SELECT
   b.url,
   b.title,
   b.description,
-  b.thumbnail,
   b.created_at,
   b.updated_at
 FROM
@@ -105,13 +106,12 @@ ORDER BY
 `
 
 type FindBookmarksByTagsRow struct {
-	ID          uuid.NullUUID  `json:"id"`
-	Url         sql.NullString `json:"url"`
-	Title       sql.NullString `json:"title"`
-	Description sql.NullString `json:"description"`
-	Thumbnail   sql.NullString `json:"thumbnail"`
-	CreatedAt   sql.NullTime   `json:"created_at"`
-	UpdatedAt   sql.NullTime   `json:"updated_at"`
+	ID          uuid.NullUUID
+	Url         sql.NullString
+	Title       sql.NullString
+	Description sql.NullString
+	CreatedAt   sql.NullTime
+	UpdatedAt   sql.NullTime
 }
 
 func (q *Queries) FindBookmarksByTags(ctx context.Context, ids []uuid.UUID) ([]FindBookmarksByTagsRow, error) {
@@ -128,7 +128,6 @@ func (q *Queries) FindBookmarksByTags(ctx context.Context, ids []uuid.UUID) ([]F
 			&i.Url,
 			&i.Title,
 			&i.Description,
-			&i.Thumbnail,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -195,7 +194,6 @@ SELECT
   url,
   title,
   description,
-  thumbnail,
   created_at,
   updated_at
 FROM
@@ -218,7 +216,6 @@ func (q *Queries) ListBookmarks(ctx context.Context) ([]Bookmark, error) {
 			&i.Url,
 			&i.Title,
 			&i.Description,
-			&i.Thumbnail,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {

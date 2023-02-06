@@ -4,7 +4,6 @@ SELECT
   url,
   title,
   description,
-  thumbnail,
   created_at,
   updated_at
 FROM
@@ -18,7 +17,6 @@ SELECT
   url,
   title,
   description,
-  thumbnail,
   created_at,
   updated_at
 FROM
@@ -34,7 +32,6 @@ SELECT
   b.url,
   b.title,
   b.description,
-  b.thumbnail,
   b.created_at,
   b.updated_at
 FROM
@@ -60,11 +57,12 @@ WHERE
 ORDER BY
   created_at DESC;
 
--- name: CreateBookmark :exec
+-- name: CreateBookmark :one
 INSERT INTO bookmarks
-  (url, title, description, thumbnail)
+  (url, title, description)
 VALUES
-  ($1, $2, $3, $4);
+  ($1, $2, $3)
+RETURNING *;
 
 -- name: UpdateBookmark :exec
 
