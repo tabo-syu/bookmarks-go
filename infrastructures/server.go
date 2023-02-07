@@ -4,20 +4,20 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/tabo-syu/bookmarks/controllers"
-	"github.com/tabo-syu/bookmarks/gateways"
-	"github.com/tabo-syu/bookmarks/services"
+	"github.com/tabo-syu/bookmarks/interfaces/controllers"
+	"github.com/tabo-syu/bookmarks/interfaces/gateways"
 	"github.com/tabo-syu/bookmarks/sqlc"
+	"github.com/tabo-syu/bookmarks/usecases"
 )
 
 func NewServer(sqlc *sqlc.Queries) *http.Server {
-	bookmarksRepo := gateways.NewBookmarksRepository(sqlc)
+	bookmarksGateway := gateways.NewBookmarksGateway(sqlc)
 	// tagsRepo := gateways.NewTagsRepository(sqlc)
 	// commentsRepo := gateways.NewCommentsRepository(sqlc)
 
-	bookmarksService := services.NewBookmarksService(bookmarksRepo)
+	bookmarksUsecase := usecases.NewBookmarksUsecase(bookmarksGateway)
 
-	bookmarks := controllers.NewBookmarksController(bookmarksService)
+	bookmarks := controllers.NewBookmarksController(bookmarksUsecase)
 	// tags := controllers.NewTagsController(tagsRepo)
 	// comments := controllers.NewCommentsController(commentsRepo)
 

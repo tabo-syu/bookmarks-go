@@ -2,14 +2,14 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/tabo-syu/bookmarks/services"
+	"github.com/tabo-syu/bookmarks/usecases"
 )
 
 type BookmarksController struct {
-	bookmarks *services.BookmarksService
+	bookmarks *usecases.BookmarksUsecase
 }
 
-func NewBookmarksController(bookmarks *services.BookmarksService) *BookmarksController {
+func NewBookmarksController(bookmarks *usecases.BookmarksUsecase) *BookmarksController {
 	return &BookmarksController{bookmarks}
 }
 

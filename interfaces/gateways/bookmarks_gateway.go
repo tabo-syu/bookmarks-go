@@ -5,22 +5,18 @@ import (
 
 	"github.com/tabo-syu/bookmarks/domain"
 	"github.com/tabo-syu/bookmarks/sqlc"
+	"github.com/tabo-syu/bookmarks/usecases"
 )
 
-type BookmarksRepository interface {
-	List(context.Context) ([]*domain.Bookmark, error)
-	Create(context.Context, *domain.BookmarkInput) (*domain.Bookmark, error)
-}
-
-type bookmarksRepository struct {
+type bookmarksGateway struct {
 	db sqlc.Querier
 }
 
-func NewBookmarksRepository(sqlc sqlc.Querier) BookmarksRepository {
-	return &bookmarksRepository{sqlc}
+func NewBookmarksGateway(sqlc sqlc.Querier) usecases.BookmarksRepository {
+	return &bookmarksGateway{sqlc}
 }
 
-func (r *bookmarksRepository) List(ctx context.Context) ([]*domain.Bookmark, error) {
+func (r *bookmarksGateway) List(ctx context.Context) ([]*domain.Bookmark, error) {
 	records, err := r.db.ListBookmarks(ctx)
 	if err != nil {
 		return nil, NewMissingEntityError(err)
@@ -42,7 +38,7 @@ func (r *bookmarksRepository) List(ctx context.Context) ([]*domain.Bookmark, err
 	return bookmarks, nil
 }
 
-func (r *bookmarksRepository) Create(ctx context.Context, param *domain.BookmarkInput) (*domain.Bookmark, error) {
+func (r *bookmarksGateway) Create(ctx context.Context, param *domain.BookmarkInput) (*domain.Bookmark, error) {
 	bookmark, err := domain.NewBookmark(param)
 	if err != nil {
 		return nil, NewValidationError("Bookmark", err)
@@ -64,4 +60,4 @@ func (r *bookmarksRepository) Create(ctx context.Context, param *domain.Bookmark
 	return bookmark, nil
 }
 
-var _ BookmarksRepository = (*bookmarksRepository)(nil)
+var _ usecases.BookmarksRepository = (*bookmarksGateway)(nil)
