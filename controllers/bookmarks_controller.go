@@ -13,11 +13,11 @@ func NewBookmarksController(bookmarks *services.BookmarksService) *BookmarksCont
 	return &BookmarksController{bookmarks}
 }
 
-func (c *BookmarksController) List(ctx *gin.Context) {
+func (c *BookmarksController) List(g *gin.Context) {
 }
 
-func (c *BookmarksController) Create(ctx *gin.Context) {
+func (c *BookmarksController) Create(g *gin.Context) {
 }
 
-func (c *BookmarksController) Delete(ctx *gin.Context) {
+func (c *BookmarksController) Delete(g *gin.Context) {
 }
