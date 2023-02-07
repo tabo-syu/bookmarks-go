@@ -59,5 +59,3 @@ func (r *bookmarksGateway) Create(ctx context.Context, param *domain.BookmarkInp
 
 	return bookmark, nil
 }
-
-var _ usecases.BookmarksRepository = (*bookmarksGateway)(nil)

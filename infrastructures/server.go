@@ -6,20 +6,18 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/tabo-syu/bookmarks/interfaces/controllers"
 	"github.com/tabo-syu/bookmarks/interfaces/gateways"
+	"github.com/tabo-syu/bookmarks/interfaces/presenters"
 	"github.com/tabo-syu/bookmarks/sqlc"
 	"github.com/tabo-syu/bookmarks/usecases"
 )
 
 func NewServer(sqlc *sqlc.Queries) *http.Server {
 	bookmarksGateway := gateways.NewBookmarksGateway(sqlc)
-	// tagsRepo := gateways.NewTagsRepository(sqlc)
-	// commentsRepo := gateways.NewCommentsRepository(sqlc)
+	webapiPresenter := presenters.NewWebAPIPresenter()
 
-	bookmarksUsecase := usecases.NewBookmarksUsecase(bookmarksGateway)
-
-	bookmarks := controllers.NewBookmarksController(bookmarksUsecase)
-	// tags := controllers.NewTagsController(tagsRepo)
-	// comments := controllers.NewCommentsController(commentsRepo)
+	bookmarks := controllers.NewBookmarksController(
+		usecases.NewBookmarksUsecase(bookmarksGateway, webapiPresenter),
+	)
 
 	router := gin.Default()
 	v1 := router.Group("/v1")
@@ -27,7 +25,7 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 		b := v1.Group("/bookmarks")
 		{
 			b.GET("", bookmarks.List)
-			b.POST("", bookmarks.Create)
+			// b.POST("", bookmarks.Create)
 			// 		b.DELETE("", bookmarks.Delete)
 		}
 

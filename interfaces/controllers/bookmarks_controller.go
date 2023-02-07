@@ -14,6 +14,7 @@ func NewBookmarksController(bookmarks *usecases.BookmarksUsecase) *BookmarksCont
 }
 
 func (c *BookmarksController) List(g *gin.Context) {
+	c.bookmarks.List(g.Request.Context(), g)
 }
 
 func (c *BookmarksController) Create(g *gin.Context) {
