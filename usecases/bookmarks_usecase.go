@@ -6,8 +6,8 @@ import (
 )
 
 type BookmarksUsecase struct {
-	Bookmarks      BookmarksRepository
-	ResponseWriter WebAPIOutput
+	bookmarks      BookmarksRepository
+	responseWriter WebAPIOutput
 }
 
 func NewBookmarksUsecase(bookmarks BookmarksRepository, writer WebAPIOutput) *BookmarksUsecase {
@@ -15,11 +15,11 @@ func NewBookmarksUsecase(bookmarks BookmarksRepository, writer WebAPIOutput) *Bo
 }
 
 func (s *BookmarksUsecase) List(g *gin.Context) {
-	bookmarks, err := s.Bookmarks.List(g.Request.Context())
-	s.ResponseWriter.Read(g, bookmarks, err)
+	bookmarks, err := s.bookmarks.List(g.Request.Context())
+	s.responseWriter.Read(g, bookmarks, err)
 }
 
 func (s *BookmarksUsecase) Create(g *gin.Context, req *domain.BookmarkInput) {
-	bookmark, err := s.Bookmarks.Create(g.Request.Context(), req)
-	s.ResponseWriter.Create(g, bookmark, err)
+	bookmark, err := s.bookmarks.Create(g.Request.Context(), req)
+	s.responseWriter.Create(g, bookmark, err)
 }

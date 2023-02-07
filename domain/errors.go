@@ -3,23 +3,23 @@ package domain
 import "fmt"
 
 type ValidationError struct {
-	Entity string
-	Field  string
-	Err    error
+	entity string
+	field  string
+	err    error
 }
 
 func NewValidationError(entity string, field string, err error) *ValidationError {
 	return &ValidationError{
-		Entity: entity,
-		Field:  field,
-		Err:    err,
+		entity: entity,
+		field:  field,
+		err:    err,
 	}
 }
 
 func (e *ValidationError) Error() string {
-	return fmt.Sprintf("%s.%s invalid value: %s", e.Entity, e.Field, e.Err.Error())
+	return fmt.Sprintf("%s.%s invalid value: %s", e.entity, e.field, e.err.Error())
 }
 
 func (e *ValidationError) Unwrap() error {
-	return e.Err
+	return e.err
 }
