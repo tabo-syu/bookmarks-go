@@ -24,9 +24,9 @@ func (p *WebAPIPresenter) Create(g *gin.Context, response any, err error) {
 
 	var invalid *gateways.ValidationError
 	if errors.As(err, &invalid) {
-		g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		g.JSON(http.StatusBadRequest, p.error(err))
 	} else {
-		g.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		g.JSON(http.StatusInternalServerError, p.error(err))
 	}
 }
 
@@ -39,9 +39,9 @@ func (p *WebAPIPresenter) Read(g *gin.Context, response any, err error) {
 
 	var missing *gateways.MissingEntityError
 	if errors.As(err, &missing) {
-		g.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		g.JSON(http.StatusNotFound, p.error(err))
 	} else {
-		g.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		g.JSON(http.StatusInternalServerError, p.error(err))
 	}
 }
 
@@ -51,4 +51,8 @@ func (p *WebAPIPresenter) Update(g *gin.Context, response any, err error) {
 
 func (p *WebAPIPresenter) Delete(g *gin.Context, response any, err error) {
 
+}
+
+func (p *WebAPIPresenter) error(err error) gin.H {
+	return gin.H{"error": err.Error()}
 }
