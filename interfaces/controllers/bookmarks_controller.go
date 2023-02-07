@@ -1,7 +1,10 @@
 package controllers
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
+	"github.com/tabo-syu/bookmarks/domain"
 	"github.com/tabo-syu/bookmarks/usecases"
 )
 
@@ -14,10 +17,19 @@ func NewBookmarksController(bookmarks *usecases.BookmarksUsecase) *BookmarksCont
 }
 
 func (c *BookmarksController) List(g *gin.Context) {
-	c.bookmarks.List(g.Request.Context(), g)
+	c.bookmarks.List(g)
 }
 
 func (c *BookmarksController) Create(g *gin.Context) {
+	var req domain.BookmarkInput
+	if err := g.ShouldBindJSON(&req); err != nil {
+		// FIXME: usecase 層を介して presenter でレスポンスを返却したほうが良い？
+		g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	c.bookmarks.Create(g, &req)
 }
 
 func (c *BookmarksController) Delete(g *gin.Context) {

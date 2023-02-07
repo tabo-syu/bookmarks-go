@@ -20,13 +20,13 @@ type Bookmark struct {
 }
 
 type BookmarkInput struct {
-	Url         string
-	Title       string
-	Description string
+	Url         string `json:"url"`
+	Title       string `json:"title"`
+	Description string `json:"description"`
 }
 
 func NewBookmark(param *BookmarkInput) (*Bookmark, error) {
-	if _, err := url.Parse(param.Url); err != nil {
+	if _, err := url.ParseRequestURI(param.Url); err != nil {
 		return nil, NewValidationError("Bookmark", "Url", err)
 	}
 
