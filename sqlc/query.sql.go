@@ -41,6 +41,18 @@ func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) 
 	return i, err
 }
 
+const deleteBookmark = `-- name: DeleteBookmark :exec
+DELETE FROM
+  bookmarks
+WHERE
+  id = $1
+`
+
+func (q *Queries) DeleteBookmark(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteBookmark, id)
+	return err
+}
+
 const findBookmarks = `-- name: FindBookmarks :many
 SELECT
   id,
@@ -186,6 +198,36 @@ func (q *Queries) FindCommentsByBookmark(ctx context.Context, ids []uuid.UUID) (
 		return nil, err
 	}
 	return items, nil
+}
+
+const getBookmark = `-- name: GetBookmark :one
+SELECT
+  id,
+  url,
+  title,
+  description,
+  created_at,
+  updated_at
+FROM
+  bookmarks
+WHERE
+  id = $1
+ORDER BY
+  created_at DESC
+`
+
+func (q *Queries) GetBookmark(ctx context.Context, id uuid.UUID) (Bookmark, error) {
+	row := q.db.QueryRowContext(ctx, getBookmark, id)
+	var i Bookmark
+	err := row.Scan(
+		&i.ID,
+		&i.Url,
+		&i.Title,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const listBookmarks = `-- name: ListBookmarks :many

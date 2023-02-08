@@ -36,4 +36,13 @@ func (c *BookmarksController) Create(g *gin.Context) {
 }
 
 func (c *BookmarksController) Delete(g *gin.Context) {
+	var req usecases.BookmarkDeleteRequest
+	if err := g.ShouldBindUri(&req); err != nil {
+		g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	bookmark, err := c.bookmarks.Delete(g, &req)
+	c.writer.Delete(g, bookmark, err)
 }

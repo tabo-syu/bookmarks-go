@@ -3,6 +3,7 @@ package gateways
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/tabo-syu/bookmarks/domain"
 	"github.com/tabo-syu/bookmarks/sqlc"
 	"github.com/tabo-syu/bookmarks/usecases"
@@ -14,6 +15,24 @@ type bookmarksGateway struct {
 
 func NewBookmarksGateway(sqlc sqlc.Querier) usecases.BookmarksRepository {
 	return &bookmarksGateway{sqlc}
+}
+
+func (r *bookmarksGateway) Get(ctx context.Context, id *uuid.UUID) (*domain.Bookmark, error) {
+	record, err := r.db.GetBookmark(ctx, *id)
+	if err != nil {
+		return nil, NewMissingEntityError(err)
+	}
+
+	bookmark := &domain.Bookmark{
+		ID:          record.ID,
+		Url:         record.Url,
+		Title:       record.Title,
+		Description: record.Description,
+		CreatedAt:   record.CreatedAt,
+		UpdatedAt:   record.UpdatedAt,
+	}
+
+	return bookmark, err
 }
 
 func (r *bookmarksGateway) List(ctx context.Context) ([]*domain.Bookmark, error) {
@@ -53,4 +72,13 @@ func (r *bookmarksGateway) Create(ctx context.Context, bookmark *domain.Bookmark
 	bookmark.UpdatedAt = record.UpdatedAt
 
 	return bookmark, nil
+}
+
+func (r *bookmarksGateway) Delete(ctx context.Context, bookmark *domain.Bookmark) error {
+	err := r.db.DeleteBookmark(ctx, bookmark.ID)
+	if err != nil {
+		return NewPersistenceError(err)
+	}
+
+	return nil
 }

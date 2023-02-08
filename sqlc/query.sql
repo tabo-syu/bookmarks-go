@@ -1,3 +1,18 @@
+-- name: GetBookmark :one
+SELECT
+  id,
+  url,
+  title,
+  description,
+  created_at,
+  updated_at
+FROM
+  bookmarks
+WHERE
+  id = $1
+ORDER BY
+  created_at DESC;
+
 -- name: ListBookmarks :many
 SELECT
   id,
@@ -64,9 +79,13 @@ VALUES
   ($1, $2, $3)
 RETURNING *;
 
--- name: UpdateBookmark :exec
-
 -- name: DeleteBookmark :exec
+DELETE FROM
+  bookmarks
+WHERE
+  id = $1;
+
+-- name: UpdateBookmark :exec
 
 -- name: CreateComment :exec
 

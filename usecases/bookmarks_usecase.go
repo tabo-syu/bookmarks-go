@@ -3,6 +3,7 @@ package usecases
 import (
 	"context"
 
+	"github.com/google/uuid"
 	"github.com/tabo-syu/bookmarks/domain"
 )
 
@@ -19,9 +20,9 @@ func (s *BookmarksUsecase) List(ctx context.Context) ([]*domain.Bookmark, error)
 }
 
 type BookmarkCreateRequest struct {
-	Url         string `json:"url"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
+	Url         string `json:"url" binding:"required,url"`
+	Title       string `json:"title" binding:"required"`
+	Description string `json:"description" binding:"required"`
 }
 
 func (s *BookmarksUsecase) Create(ctx context.Context, req *BookmarkCreateRequest) (*domain.Bookmark, error) {
@@ -31,4 +32,26 @@ func (s *BookmarksUsecase) Create(ctx context.Context, req *BookmarkCreateReques
 	}
 
 	return s.bookmarks.Create(ctx, bookmark)
+}
+
+type BookmarkDeleteRequest struct {
+	Id string `uri:"id" binding:"required,uuid"`
+}
+
+func (s *BookmarksUsecase) Delete(ctx context.Context, req *BookmarkDeleteRequest) (*domain.Bookmark, error) {
+	uuid, err := uuid.Parse(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	bookmark, err := s.bookmarks.Get(ctx, &uuid)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := s.bookmarks.Delete(ctx, bookmark); err != nil {
+		return nil, err
+	}
+
+	return bookmark, nil
 }
