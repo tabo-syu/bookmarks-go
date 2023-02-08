@@ -19,7 +19,7 @@ func (s *BookmarksUsecase) List(g *gin.Context) {
 	s.responseWriter.Read(g, bookmarks, err)
 }
 
-func (s *BookmarksUsecase) Create(g *gin.Context, req *domain.BookmarkInput) {
+func (s *BookmarksUsecase) Create(g *gin.Context, req *domain.BookmarkCreateRequest) {
 	bookmark, err := s.bookmarks.Create(g.Request.Context(), req)
 	s.responseWriter.Create(g, bookmark, err)
 }

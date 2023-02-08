@@ -21,7 +21,7 @@ func (c *BookmarksController) List(g *gin.Context) {
 }
 
 func (c *BookmarksController) Create(g *gin.Context) {
-	var req domain.BookmarkInput
+	var req domain.BookmarkCreateRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
 		// FIXME: usecase 層を介して presenter でレスポンスを返却したほうが良い？
 		g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})

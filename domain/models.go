@@ -19,21 +19,21 @@ type Bookmark struct {
 	Tags     []*Tag     `json:"tags,omitempty"`
 }
 
-type BookmarkInput struct {
+type BookmarkCreateRequest struct {
 	Url         string `json:"url"`
 	Title       string `json:"title"`
 	Description string `json:"description"`
 }
 
-func NewBookmark(param *BookmarkInput) (*Bookmark, error) {
-	if _, err := url.ParseRequestURI(param.Url); err != nil {
+func NewBookmark(urlStr string, title string, description string) (*Bookmark, error) {
+	if _, err := url.ParseRequestURI(urlStr); err != nil {
 		return nil, NewValidationError("Bookmark", "Url", err)
 	}
 
 	return &Bookmark{
-		Url:         param.Url,
-		Title:       param.Title,
-		Description: param.Description,
+		Url:         urlStr,
+		Title:       title,
+		Description: description,
 	}, nil
 }
 
