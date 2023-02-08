@@ -17,6 +17,18 @@ func NewBookmarksController(bookmarks *usecases.BookmarksUsecase, writer *presen
 	return &BookmarksController{bookmarks, writer}
 }
 
+func (c *BookmarksController) Get(g *gin.Context) {
+	var req usecases.BookmarkGetRequest
+	if err := g.ShouldBindUri(&req); err != nil {
+		g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	bookmark, err := c.bookmarks.Get(g, &req)
+	c.writer.Read(g, bookmark, err)
+}
+
 func (c *BookmarksController) List(g *gin.Context) {
 	bookmarks, err := c.bookmarks.List(g)
 	c.writer.Read(g, bookmarks, err)

@@ -26,6 +26,7 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 		b := v1.Group("/bookmarks")
 		{
 			b.GET("", bookmarks.List)
+			b.GET("/:id", bookmarks.Get)
 			b.POST("", bookmarks.Create)
 			b.DELETE("/:id", bookmarks.Delete)
 		}

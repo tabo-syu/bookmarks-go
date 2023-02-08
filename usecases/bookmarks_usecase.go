@@ -15,6 +15,19 @@ func NewBookmarksUsecase(bookmarks BookmarksRepository) *BookmarksUsecase {
 	return &BookmarksUsecase{bookmarks}
 }
 
+type BookmarkGetRequest struct {
+	Id string `uri:"id" binding:"required,uuid"`
+}
+
+func (s *BookmarksUsecase) Get(ctx context.Context, req *BookmarkGetRequest) (*domain.Bookmark, error) {
+	uuid, err := uuid.Parse(req.Id)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.bookmarks.Get(ctx, &uuid)
+}
+
 func (s *BookmarksUsecase) List(ctx context.Context) ([]*domain.Bookmark, error) {
 	return s.bookmarks.List(ctx)
 }
