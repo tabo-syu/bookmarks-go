@@ -28,6 +28,7 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 			b.GET("", bookmarks.List)
 			b.GET("/:id", bookmarks.Get)
 			b.POST("", bookmarks.Create)
+			b.PUT("/:id", bookmarks.Update)
 			b.DELETE("/:id", bookmarks.Delete)
 		}
 

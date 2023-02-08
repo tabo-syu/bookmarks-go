@@ -2,6 +2,7 @@ package gateways
 
 import (
 	"context"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/tabo-syu/bookmarks/domain"
@@ -72,6 +73,23 @@ func (r *bookmarksGateway) Create(ctx context.Context, bookmark *domain.Bookmark
 	bookmark.UpdatedAt = record.UpdatedAt
 
 	return bookmark, nil
+}
+
+func (r *bookmarksGateway) Update(ctx context.Context, bookmark *domain.Bookmark) (*domain.Bookmark, error) {
+	record, err := r.db.UpdateBookmark(ctx, sqlc.UpdateBookmarkParams{
+		ID:          bookmark.ID,
+		Url:         bookmark.Url,
+		Title:       bookmark.Title,
+		Description: bookmark.Description,
+		UpdatedAt:   time.Now(),
+	})
+	if err != nil {
+		return nil, NewPersistenceError(err)
+	}
+
+	bookmark.UpdatedAt = record.UpdatedAt
+
+	return bookmark, err
 }
 
 func (r *bookmarksGateway) Delete(ctx context.Context, bookmark *domain.Bookmark) error {

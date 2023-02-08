@@ -18,6 +18,7 @@ type Querier interface {
 	FindCommentsByBookmark(ctx context.Context, ids []uuid.UUID) ([]Comment, error)
 	GetBookmark(ctx context.Context, id uuid.UUID) (Bookmark, error)
 	ListBookmarks(ctx context.Context) ([]Bookmark, error)
+	UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) (Bookmark, error)
 }
 
 var _ Querier = (*Queries)(nil)

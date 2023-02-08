@@ -8,6 +8,7 @@ package sqlc
 import (
 	"context"
 	"database/sql"
+	"time"
 
 	"github.com/google/uuid"
 	"github.com/lib/pq"
@@ -272,4 +273,44 @@ func (q *Queries) ListBookmarks(ctx context.Context) ([]Bookmark, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateBookmark = `-- name: UpdateBookmark :one
+UPDATE bookmarks
+SET
+  url = $2,
+  title = $3,
+  description = $4,
+  updated_at = $5
+WHERE
+  id = $1
+RETURNING id, url, title, description, created_at, updated_at
+`
+
+type UpdateBookmarkParams struct {
+	ID          uuid.UUID
+	Url         string
+	Title       string
+	Description string
+	UpdatedAt   time.Time
+}
+
+func (q *Queries) UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) (Bookmark, error) {
+	row := q.db.QueryRowContext(ctx, updateBookmark,
+		arg.ID,
+		arg.Url,
+		arg.Title,
+		arg.Description,
+		arg.UpdatedAt,
+	)
+	var i Bookmark
+	err := row.Scan(
+		&i.ID,
+		&i.Url,
+		&i.Title,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

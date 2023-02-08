@@ -85,7 +85,16 @@ DELETE FROM
 WHERE
   id = $1;
 
--- name: UpdateBookmark :exec
+-- name: UpdateBookmark :one
+UPDATE bookmarks
+SET
+  url = $2,
+  title = $3,
+  description = $4,
+  updated_at = $5
+WHERE
+  id = $1
+RETURNING *;
 
 -- name: CreateComment :exec
 

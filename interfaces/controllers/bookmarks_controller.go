@@ -37,7 +37,6 @@ func (c *BookmarksController) List(g *gin.Context) {
 func (c *BookmarksController) Create(g *gin.Context) {
 	var req usecases.BookmarkCreateRequest
 	if err := g.ShouldBindJSON(&req); err != nil {
-		// FIXME: usecase 層を介して presenter でレスポンスを返却したほうが良い？
 		g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 		return
@@ -45,6 +44,31 @@ func (c *BookmarksController) Create(g *gin.Context) {
 
 	bookmark, err := c.bookmarks.Create(g, &req)
 	c.writer.Create(g, bookmark, err)
+}
+
+func (c *BookmarksController) Update(g *gin.Context) {
+	var (
+		reqURI  usecases.BookmarkUpdateURIRequest
+		reqJSON usecases.BookmarkUpdateJSONRequest
+	)
+	if err := g.ShouldBindUri(&reqURI); err != nil {
+		g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+	if err := g.ShouldBindJSON(&reqJSON); err != nil {
+		g.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+
+		return
+	}
+
+	req := usecases.BookmarkUpdateRequest{
+		BookmarkUpdateURIRequest:  reqURI,
+		BookmarkUpdateJSONRequest: reqJSON,
+	}
+
+	bookmark, err := c.bookmarks.Update(g, &req)
+	c.writer.Update(g, bookmark, err)
 }
 
 func (c *BookmarksController) Delete(g *gin.Context) {
