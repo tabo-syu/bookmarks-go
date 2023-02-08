@@ -16,7 +16,8 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 	webapiPresenter := presenters.NewWebAPIPresenter()
 
 	bookmarks := controllers.NewBookmarksController(
-		usecases.NewBookmarksUsecase(bookmarksGateway, webapiPresenter),
+		usecases.NewBookmarksUsecase(bookmarksGateway),
+		webapiPresenter,
 	)
 
 	router := gin.Default()
@@ -26,7 +27,7 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 		{
 			b.GET("", bookmarks.List)
 			b.POST("", bookmarks.Create)
-			// 		b.DELETE("", bookmarks.Delete)
+			// b.DELETE("", bookmarks.Delete)
 		}
 
 		// 	t := v1.Group("/tags")

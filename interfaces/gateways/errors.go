@@ -2,22 +2,6 @@ package gateways
 
 import "fmt"
 
-type ValidationError struct {
-	entity string
-	err    error
-}
-
-func NewValidationError(entity string, err error) *ValidationError {
-	return &ValidationError{
-		entity: entity,
-		err:    err,
-	}
-}
-
-func (e *ValidationError) Error() string {
-	return fmt.Sprintf("%s invalid input value: %s", e.entity, e.err.Error())
-}
-
 type MissingEntityError struct {
 	err error
 }

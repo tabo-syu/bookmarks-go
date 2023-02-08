@@ -5,13 +5,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/tabo-syu/bookmarks/domain"
 	"github.com/tabo-syu/bookmarks/interfaces/gateways"
-	"github.com/tabo-syu/bookmarks/usecases"
 )
 
 type WebAPIPresenter struct{}
 
-func NewWebAPIPresenter() usecases.WebAPIOutput {
+func NewWebAPIPresenter() *WebAPIPresenter {
 	return &WebAPIPresenter{}
 }
 
@@ -22,7 +22,7 @@ func (p *WebAPIPresenter) Create(g *gin.Context, response any, err error) {
 		return
 	}
 
-	var invalid *gateways.ValidationError
+	var invalid *domain.ValidationError
 	if errors.As(err, &invalid) {
 		g.JSON(http.StatusBadRequest, p.error(err))
 	} else {
@@ -53,13 +53,13 @@ func (p *WebAPIPresenter) Update(g *gin.Context, response any, err error) {
 	}
 
 	var (
+		invalid *domain.ValidationError
 		missing *gateways.MissingEntityError
-		invalid *gateways.ValidationError
 	)
-	if errors.As(err, &missing) {
-		g.JSON(http.StatusNotFound, p.error(err))
-	} else if errors.As(err, &invalid) {
+	if errors.As(err, &invalid) {
 		g.JSON(http.StatusBadRequest, p.error(err))
+	} else if errors.As(err, &missing) {
+		g.JSON(http.StatusNotFound, p.error(err))
 	} else {
 		g.JSON(http.StatusInternalServerError, p.error(err))
 	}

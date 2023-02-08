@@ -1,15 +1,17 @@
 package domain
 
 import (
-	"net/url"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
 )
 
+var validate = validator.New()
+
 type Bookmark struct {
 	ID          uuid.UUID `json:"id"`
-	Url         string    `json:"url"`
+	Url         string    `json:"url" validate:"url"`
 	Title       string    `json:"title"`
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
@@ -19,22 +21,19 @@ type Bookmark struct {
 	Tags     []*Tag     `json:"tags,omitempty"`
 }
 
-type BookmarkCreateRequest struct {
-	Url         string `json:"url"`
-	Title       string `json:"title"`
-	Description string `json:"description"`
-}
-
-func NewBookmark(urlStr string, title string, description string) (*Bookmark, error) {
-	if _, err := url.ParseRequestURI(urlStr); err != nil {
-		return nil, NewValidationError("Bookmark", "Url", err)
-	}
-
-	return &Bookmark{
-		Url:         urlStr,
+func NewBookmark(url string, title string, description string) (*Bookmark, error) {
+	bookmark := Bookmark{
+		Url:         url,
 		Title:       title,
 		Description: description,
-	}, nil
+	}
+
+	err := validate.Struct(bookmark)
+	if err != nil {
+		return nil, NewValidationError("Bookmark", err)
+	}
+
+	return &bookmark, nil
 }
 
 type Comment struct {
@@ -50,7 +49,7 @@ type Comment struct {
 type Tag struct {
 	ID        uuid.UUID `json:"id"`
 	Name      string    `json:"name"`
-	Color     string    `json:"color"`
+	Color     string    `json:"color" validate:"hexcolor"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 

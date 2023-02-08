@@ -38,16 +38,11 @@ func (r *bookmarksGateway) List(ctx context.Context) ([]*domain.Bookmark, error)
 	return bookmarks, nil
 }
 
-func (r *bookmarksGateway) Create(ctx context.Context, req *domain.BookmarkCreateRequest) (*domain.Bookmark, error) {
-	bookmark, err := domain.NewBookmark(req.Url, req.Title, req.Description)
-	if err != nil {
-		return nil, NewValidationError("Bookmark", err)
-	}
-
+func (r *bookmarksGateway) Create(ctx context.Context, bookmark *domain.Bookmark) (*domain.Bookmark, error) {
 	record, err := r.db.CreateBookmark(ctx, sqlc.CreateBookmarkParams{
-		Url:         req.Url,
-		Title:       req.Title,
-		Description: req.Description,
+		Url:         bookmark.Url,
+		Title:       bookmark.Title,
+		Description: bookmark.Description,
 	})
 	if err != nil {
 		return nil, NewPersistenceError(err)
