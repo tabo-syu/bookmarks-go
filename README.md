@@ -1,6 +1,15 @@
-# v1
+# Bookmarks API
 
-## bookmarks
+```bash
+$ git clone https://github.com/tabo-syu/bookmarks.git
+$ cd bookmarks
+$ go run cmd/migrator/main.go
+$ go run cmd/server/main.go
+```
+
+## v1
+
+### bookmarks
 
 ```bash
 # ListBookmarks
@@ -19,7 +28,7 @@ $ curl -X PUT http://localhost:8080/v1/bookmarks/{bookmark_id} -d '{"url":"https
 $ curl -X DELETE http://localhost:8080/v1/bookmarks/{bookmark_id} | jq -r .
 ```
 
-## tags
+### tags
 
 ```bash
 # ListTags
@@ -38,7 +47,7 @@ $ curl -X PUT http://localhost:8080/v1/tags/{tag_id} -d '{"name":"tag name","col
 $ curl -X DELETE http://localhost:8080/v1/tags/{tag_id} | jq -r .
 ```
 
-## comments
+### comments
 
 ```bash
 # ListComments
