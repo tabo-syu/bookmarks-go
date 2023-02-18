@@ -42,6 +42,32 @@ func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) 
 	return i, err
 }
 
+const createTag = `-- name: CreateTag :one
+INSERT INTO tags
+  (name, color)
+VALUES
+  ($1, $2)
+RETURNING id, name, color, created_at, updated_at
+`
+
+type CreateTagParams struct {
+	Name  string
+	Color string
+}
+
+func (q *Queries) CreateTag(ctx context.Context, arg CreateTagParams) (Tag, error) {
+	row := q.db.QueryRowContext(ctx, createTag, arg.Name, arg.Color)
+	var i Tag
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Color,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const deleteBookmark = `-- name: DeleteBookmark :exec
 DELETE FROM
   bookmarks
@@ -54,50 +80,16 @@ func (q *Queries) DeleteBookmark(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const findBookmarks = `-- name: FindBookmarks :many
-SELECT
-  id,
-  url,
-  title,
-  description,
-  created_at,
-  updated_at
-FROM
-  bookmarks
+const deleteTag = `-- name: DeleteTag :exec
+DELETE FROM
+  tags
 WHERE
-  id = ANY($1::UUID[])
-ORDER BY
-  created_at DESC
+  id = $1
 `
 
-func (q *Queries) FindBookmarks(ctx context.Context, ids []uuid.UUID) ([]Bookmark, error) {
-	rows, err := q.db.QueryContext(ctx, findBookmarks, pq.Array(ids))
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Bookmark{}
-	for rows.Next() {
-		var i Bookmark
-		if err := rows.Scan(
-			&i.ID,
-			&i.Url,
-			&i.Title,
-			&i.Description,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
+func (q *Queries) DeleteTag(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteTag, id)
+	return err
 }
 
 const findBookmarksByTags = `-- name: FindBookmarksByTags :many
@@ -231,6 +223,34 @@ func (q *Queries) GetBookmark(ctx context.Context, id uuid.UUID) (Bookmark, erro
 	return i, err
 }
 
+const getTag = `-- name: GetTag :one
+SELECT
+  id,
+  name,
+  color,
+  created_at,
+  updated_at
+FROM
+  tags
+WHERE
+  id = $1
+ORDER BY
+  created_at DESC
+`
+
+func (q *Queries) GetTag(ctx context.Context, id uuid.UUID) (Tag, error) {
+	row := q.db.QueryRowContext(ctx, getTag, id)
+	var i Tag
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Color,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const listBookmarks = `-- name: ListBookmarks :many
 SELECT
   id,
@@ -259,6 +279,48 @@ func (q *Queries) ListBookmarks(ctx context.Context) ([]Bookmark, error) {
 			&i.Url,
 			&i.Title,
 			&i.Description,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listTags = `-- name: ListTags :many
+SELECT
+  id,
+  name,
+  color,
+  created_at,
+  updated_at
+FROM
+  tags
+ORDER BY
+  created_at DESC
+`
+
+func (q *Queries) ListTags(ctx context.Context) ([]Tag, error) {
+	rows, err := q.db.QueryContext(ctx, listTags)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Tag{}
+	for rows.Next() {
+		var i Tag
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Color,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -309,6 +371,42 @@ func (q *Queries) UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) 
 		&i.Url,
 		&i.Title,
 		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const updateTag = `-- name: UpdateTag :one
+UPDATE tags
+SET
+  name = $2,
+  color = $3,
+  updated_at = $4
+WHERE
+  id = $1
+RETURNING id, name, color, created_at, updated_at
+`
+
+type UpdateTagParams struct {
+	ID        uuid.UUID
+	Name      string
+	Color     string
+	UpdatedAt time.Time
+}
+
+func (q *Queries) UpdateTag(ctx context.Context, arg UpdateTagParams) (Tag, error) {
+	row := q.db.QueryRowContext(ctx, updateTag,
+		arg.ID,
+		arg.Name,
+		arg.Color,
+		arg.UpdatedAt,
+	)
+	var i Tag
+	err := row.Scan(
+		&i.ID,
+		&i.Name,
+		&i.Color,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)

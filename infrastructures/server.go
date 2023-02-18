@@ -12,11 +12,18 @@ import (
 )
 
 func NewServer(sqlc *sqlc.Queries) *http.Server {
-	bookmarksGateway := gateways.NewBookmarksGateway(sqlc)
 	webapiPresenter := presenters.NewWebAPIPresenter()
 
 	bookmarks := controllers.NewBookmarksController(
-		usecases.NewBookmarksUsecase(bookmarksGateway),
+		usecases.NewBookmarksUsecase(
+			gateways.NewBookmarksGateway(sqlc),
+		),
+		webapiPresenter,
+	)
+	tags := controllers.NewTagsController(
+		usecases.NewTagsUsecase(
+			gateways.NewTagsGateway(sqlc),
+		),
 		webapiPresenter,
 	)
 
@@ -32,12 +39,14 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 			b.DELETE("/:id", bookmarks.Delete)
 		}
 
-		// 	t := v1.Group("/tags")
-		// 	{
-		// 		t.GET("", tags.List)
-		// 		t.POST("", tags.Create)
-		// 		t.DELETE("", tags.Delete)
-		// 	}
+		t := v1.Group("/tags")
+		{
+			t.GET("", tags.List)
+			t.GET("/:id", tags.Get)
+			t.POST("", tags.Create)
+			t.PUT("/:id", tags.Update)
+			t.DELETE("/:id", tags.Delete)
+		}
 
 		// 	c := v1.Group("/comments")
 		// 	{

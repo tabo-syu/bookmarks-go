@@ -87,6 +87,7 @@ func (r *bookmarksGateway) Update(ctx context.Context, bookmark *domain.Bookmark
 		return nil, NewPersistenceError(err)
 	}
 
+	bookmark.CreatedAt = record.CreatedAt
 	bookmark.UpdatedAt = record.UpdatedAt
 
 	return bookmark, err

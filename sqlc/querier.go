@@ -12,13 +12,17 @@ import (
 
 type Querier interface {
 	CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmark, error)
+	CreateTag(ctx context.Context, arg CreateTagParams) (Tag, error)
 	DeleteBookmark(ctx context.Context, id uuid.UUID) error
-	FindBookmarks(ctx context.Context, ids []uuid.UUID) ([]Bookmark, error)
+	DeleteTag(ctx context.Context, id uuid.UUID) error
 	FindBookmarksByTags(ctx context.Context, ids []uuid.UUID) ([]FindBookmarksByTagsRow, error)
 	FindCommentsByBookmark(ctx context.Context, ids []uuid.UUID) ([]Comment, error)
 	GetBookmark(ctx context.Context, id uuid.UUID) (Bookmark, error)
+	GetTag(ctx context.Context, id uuid.UUID) (Tag, error)
 	ListBookmarks(ctx context.Context) ([]Bookmark, error)
+	ListTags(ctx context.Context) ([]Tag, error)
 	UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) (Bookmark, error)
+	UpdateTag(ctx context.Context, arg UpdateTagParams) (Tag, error)
 }
 
 var _ Querier = (*Queries)(nil)

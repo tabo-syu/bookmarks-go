@@ -8,9 +8,9 @@ VALUES
 INSERT INTO tags
   (id, name, color)
 VALUES
-  ('92449b60-90ac-4161-9be1-200b07854a46', '技術', '000000'),
-  ('c84cbdf8-58c3-4a39-88be-921264daa8d2', '趣味', 'ffffff'),
-  ('baa234d5-8c65-4a32-912e-224752be823c', 'その他', '123456');
+  ('92449b60-90ac-4161-9be1-200b07854a46', '技術', '#000000'),
+  ('c84cbdf8-58c3-4a39-88be-921264daa8d2', '趣味', '#ffffff'),
+  ('baa234d5-8c65-4a32-912e-224752be823c', 'その他', '#123456');
 
 INSERT INTO comments
   (bookmark_id, comment)

@@ -26,21 +26,6 @@ FROM
 ORDER BY
   created_at DESC;
 
--- name: FindBookmarks :many
-SELECT
-  id,
-  url,
-  title,
-  description,
-  created_at,
-  updated_at
-FROM
-  bookmarks
-WHERE
-  id = ANY(@ids::UUID[])
-ORDER BY
-  created_at DESC;
-
 -- name: FindBookmarksByTags :many
 SELECT
   b.id,
@@ -96,8 +81,51 @@ WHERE
   id = $1
 RETURNING *;
 
--- name: CreateComment :exec
+-- name: GetTag :one
+SELECT
+  id,
+  name,
+  color,
+  created_at,
+  updated_at
+FROM
+  tags
+WHERE
+  id = $1
+ORDER BY
+  created_at DESC;
 
--- name: UpdateComment :exec
+-- name: ListTags :many
+SELECT
+  id,
+  name,
+  color,
+  created_at,
+  updated_at
+FROM
+  tags
+ORDER BY
+  created_at DESC;
 
--- name: DeleteComment :exec
+-- name: CreateTag :one
+INSERT INTO tags
+  (name, color)
+VALUES
+  ($1, $2)
+RETURNING *;
+
+-- name: DeleteTag :exec
+DELETE FROM
+  tags
+WHERE
+  id = $1;
+
+-- name: UpdateTag :one
+UPDATE tags
+SET
+  name = $2,
+  color = $3,
+  updated_at = $4
+WHERE
+  id = $1
+RETURNING *;

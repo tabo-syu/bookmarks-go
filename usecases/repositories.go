@@ -14,3 +14,11 @@ type BookmarksRepository interface {
 	Update(context.Context, *domain.Bookmark) (*domain.Bookmark, error)
 	Delete(context.Context, *domain.Bookmark) error
 }
+
+type TagsRepository interface {
+	Get(context.Context, *uuid.UUID) (*domain.Tag, error)
+	List(context.Context) ([]*domain.Tag, error)
+	Create(context.Context, *domain.Tag) (*domain.Tag, error)
+	Update(context.Context, *domain.Tag) (*domain.Tag, error)
+	Delete(context.Context, *domain.Tag) error
+}

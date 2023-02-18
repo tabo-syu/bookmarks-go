@@ -55,3 +55,17 @@ type Tag struct {
 
 	Bookmarks []*Bookmark `json:"bookmarks,omitempty"`
 }
+
+func NewTag(name string, color string) (*Tag, error) {
+	tag := Tag{
+		Name:  name,
+		Color: color,
+	}
+
+	err := validate.Struct(tag)
+	if err != nil {
+		return nil, NewValidationError("Tag", err)
+	}
+
+	return &tag, nil
+}
