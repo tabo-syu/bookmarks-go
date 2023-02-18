@@ -16,7 +16,7 @@ func NewBookmarksUsecase(bookmarks BookmarksRepository) *BookmarksUsecase {
 }
 
 type BookmarkGetRequest struct {
-	Id string `uri:"id" binding:"required,uuid"`
+	Id string `uri:"bookmark_id" binding:"required,uuid"`
 }
 
 func (u *BookmarksUsecase) Get(ctx context.Context, req *BookmarkGetRequest) (*domain.Bookmark, error) {
@@ -48,7 +48,7 @@ func (u *BookmarksUsecase) Create(ctx context.Context, req *BookmarkCreateReques
 }
 
 type BookmarkUpdateURIRequest struct {
-	Id string `uri:"id" binding:"required,uuid"`
+	Id string `uri:"bookmark_id" binding:"required,uuid"`
 }
 
 type BookmarkUpdateJSONRequest struct {
@@ -84,7 +84,7 @@ func (u *BookmarksUsecase) Update(ctx context.Context, req *BookmarkUpdateReques
 }
 
 type BookmarkDeleteRequest struct {
-	Id string `uri:"id" binding:"required,uuid"`
+	Id string `uri:"bookmark_id" binding:"required,uuid"`
 }
 
 func (u *BookmarksUsecase) Delete(ctx context.Context, req *BookmarkDeleteRequest) (*domain.Bookmark, error) {

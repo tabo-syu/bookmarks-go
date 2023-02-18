@@ -33,10 +33,10 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 		b := v1.Group("/bookmarks")
 		{
 			b.GET("", bookmarks.List)
-			b.GET("/:id", bookmarks.Get)
+			b.GET("/:bookmark_id", bookmarks.Get)
 			b.POST("", bookmarks.Create)
-			b.PUT("/:id", bookmarks.Update)
-			b.DELETE("/:id", bookmarks.Delete)
+			b.PUT("/:bookmark_id", bookmarks.Update)
+			b.DELETE("/:bookmark_id", bookmarks.Delete)
 		}
 
 		t := v1.Group("/tags")
