@@ -22,3 +22,10 @@ type TagsRepository interface {
 	Update(context.Context, *domain.Tag) (*domain.Tag, error)
 	Delete(context.Context, *domain.Tag) error
 }
+
+type CommentsRepository interface {
+	Get(context.Context, *uuid.UUID) (*domain.Comment, error)
+	List(context.Context, *uuid.UUID) ([]*domain.Comment, error)
+	Create(context.Context, *domain.Comment) (*domain.Comment, error)
+	Delete(context.Context, *domain.Comment) error
+}

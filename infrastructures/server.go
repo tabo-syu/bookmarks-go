@@ -26,6 +26,12 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 		),
 		webapiPresenter,
 	)
+	comments := controllers.NewCommentsController(
+		usecases.NewCommentsUsecase(
+			gateways.NewCommentsGateway(sqlc),
+		),
+		webapiPresenter,
+	)
 
 	router := gin.Default()
 	v1 := router.Group("/v1")
@@ -37,6 +43,9 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 			b.POST("", bookmarks.Create)
 			b.PUT("/:bookmark_id", bookmarks.Update)
 			b.DELETE("/:bookmark_id", bookmarks.Delete)
+
+			b.GET("/:bookmark_id/comments", comments.List)
+			b.POST("/:bookmark_id/comments", comments.Create)
 		}
 
 		t := v1.Group("/tags")
@@ -48,12 +57,11 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 			t.DELETE("/:id", tags.Delete)
 		}
 
-		// 	c := v1.Group("/comments")
-		// 	{
-		// 		c.GET("", comments.List)
-		// 		c.POST("", comments.Create)
-		// 		c.DELETE("", comments.Delete)
-		// 	}
+		c := v1.Group("/comments")
+		{
+			c.GET("/:id", comments.Get)
+			c.DELETE("/:id", comments.Delete)
+		}
 	}
 
 	return &http.Server{

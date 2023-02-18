@@ -30,7 +30,7 @@ type BookmarkHasTag struct {
 type Comment struct {
 	ID         uuid.UUID
 	BookmarkID uuid.UUID
-	Comment    string
+	Body       string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }

@@ -18,7 +18,7 @@ CREATE TABLE tags (
 CREATE TABLE comments (
   id          UUID        PRIMARY KEY DEFAULT gen_random_uuid(),
   bookmark_id UUID        NOT NULL    REFERENCES bookmarks(id) ON DELETE CASCADE,
-  comment     TEXT        NOT NULL,
+  body        TEXT        NOT NULL,
   created_at  TIMESTAMPTZ NOT NULL    DEFAULT CURRENT_TIMESTAMP,
   updated_at  TIMESTAMPTZ NOT NULL    DEFAULT CURRENT_TIMESTAMP
 );

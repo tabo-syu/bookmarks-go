@@ -39,3 +39,17 @@ $ curl -X DELETE http://localhost:8080/v1/tags/{tag_id} | jq -r .
 ```
 
 ## comments
+
+```bash
+# ListComments
+$ curl http://localhost:8080/v1/bookmarks/{bookmark_id}/comments | jq -r .
+
+# GetComment
+$ curl http://localhost:8080/v1/comments/{comment_id} | jq -r .
+
+# CreateComment
+$ curl -X POST http://localhost:8080/v1/bookmarks/{bookmark_id} -d '{"body":"comment"}' -v | jq -r .
+
+# DeleteComment
+$ curl -X DELETE http://localhost:8080/v1/comments/{comment_id} | jq -r .
+```

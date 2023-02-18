@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -79,8 +78,6 @@ func (c *TagsController) Delete(g *gin.Context) {
 
 		return
 	}
-
-	fmt.Println(req)
 
 	tag, err := c.tags.Delete(g, &req)
 	c.writer.Delete(g, tag, err)

@@ -42,6 +42,32 @@ func (q *Queries) CreateBookmark(ctx context.Context, arg CreateBookmarkParams) 
 	return i, err
 }
 
+const createComment = `-- name: CreateComment :one
+INSERT INTO comments
+  (bookmark_id, body)
+VALUES
+  ($1, $2)
+RETURNING id, bookmark_id, body, created_at, updated_at
+`
+
+type CreateCommentParams struct {
+	BookmarkID uuid.UUID
+	Body       string
+}
+
+func (q *Queries) CreateComment(ctx context.Context, arg CreateCommentParams) (Comment, error) {
+	row := q.db.QueryRowContext(ctx, createComment, arg.BookmarkID, arg.Body)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.BookmarkID,
+		&i.Body,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const createTag = `-- name: CreateTag :one
 INSERT INTO tags
   (name, color)
@@ -77,6 +103,18 @@ WHERE
 
 func (q *Queries) DeleteBookmark(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.ExecContext(ctx, deleteBookmark, id)
+	return err
+}
+
+const deleteComment = `-- name: DeleteComment :exec
+DELETE FROM
+  comments
+WHERE
+  id = $1
+`
+
+func (q *Queries) DeleteComment(ctx context.Context, id uuid.UUID) error {
+	_, err := q.db.ExecContext(ctx, deleteComment, id)
 	return err
 }
 
@@ -153,7 +191,7 @@ const findCommentsByBookmark = `-- name: FindCommentsByBookmark :many
 SELECT
   id,
   bookmark_id,
-  comment,
+  body,
   created_at,
   updated_at
 FROM
@@ -176,7 +214,7 @@ func (q *Queries) FindCommentsByBookmark(ctx context.Context, ids []uuid.UUID) (
 		if err := rows.Scan(
 			&i.ID,
 			&i.BookmarkID,
-			&i.Comment,
+			&i.Body,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -217,6 +255,34 @@ func (q *Queries) GetBookmark(ctx context.Context, id uuid.UUID) (Bookmark, erro
 		&i.Url,
 		&i.Title,
 		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getComment = `-- name: GetComment :one
+SELECT
+  id,
+  bookmark_id,
+  body,
+  created_at,
+  updated_at
+FROM
+  comments
+WHERE
+  id = $1
+ORDER BY
+  created_at DESC
+`
+
+func (q *Queries) GetComment(ctx context.Context, id uuid.UUID) (Comment, error) {
+	row := q.db.QueryRowContext(ctx, getComment, id)
+	var i Comment
+	err := row.Scan(
+		&i.ID,
+		&i.BookmarkID,
+		&i.Body,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -279,6 +345,50 @@ func (q *Queries) ListBookmarks(ctx context.Context) ([]Bookmark, error) {
 			&i.Url,
 			&i.Title,
 			&i.Description,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listComments = `-- name: ListComments :many
+SELECT
+  id,
+  bookmark_id,
+  body,
+  created_at,
+  updated_at
+FROM
+  comments
+WHERE
+  bookmark_id = $1
+ORDER BY
+  created_at DESC
+`
+
+func (q *Queries) ListComments(ctx context.Context, bookmarkID uuid.UUID) ([]Comment, error) {
+	rows, err := q.db.QueryContext(ctx, listComments, bookmarkID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Comment{}
+	for rows.Next() {
+		var i Comment
+		if err := rows.Scan(
+			&i.ID,
+			&i.BookmarkID,
+			&i.Body,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {

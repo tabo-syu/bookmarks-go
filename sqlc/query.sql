@@ -47,7 +47,7 @@ ORDER BY
 SELECT
   id,
   bookmark_id,
-  comment,
+  body,
   created_at,
   updated_at
 FROM
@@ -129,3 +129,44 @@ SET
 WHERE
   id = $1
 RETURNING *;
+
+-- name: GetComment :one
+SELECT
+  id,
+  bookmark_id,
+  body,
+  created_at,
+  updated_at
+FROM
+  comments
+WHERE
+  id = $1
+ORDER BY
+  created_at DESC;
+
+-- name: ListComments :many
+SELECT
+  id,
+  bookmark_id,
+  body,
+  created_at,
+  updated_at
+FROM
+  comments
+WHERE
+  bookmark_id = $1
+ORDER BY
+  created_at DESC;
+
+-- name: CreateComment :one
+INSERT INTO comments
+  (bookmark_id, body)
+VALUES
+  ($1, $2)
+RETURNING *;
+
+-- name: DeleteComment :exec
+DELETE FROM
+  comments
+WHERE
+  id = $1;

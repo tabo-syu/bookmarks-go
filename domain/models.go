@@ -39,11 +39,25 @@ func NewBookmark(url string, title string, description string) (*Bookmark, error
 type Comment struct {
 	ID         uuid.UUID `json:"id"`
 	BookmarkID uuid.UUID `json:"-"`
-	Comment    string    `json:"comment"`
+	Body       string    `json:"body"`
 	CreatedAt  time.Time `json:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at"`
 
 	Bookmark *Bookmark `json:"bookmark,omitempty"`
+}
+
+func NewComment(bookmarkID *uuid.UUID, body string) (*Comment, error) {
+	comment := Comment{
+		BookmarkID: *bookmarkID,
+		Body:       body,
+	}
+
+	err := validate.Struct(comment)
+	if err != nil {
+		return nil, NewValidationError("Comment", err)
+	}
+
+	return &comment, nil
 }
 
 type Tag struct {
