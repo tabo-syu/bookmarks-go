@@ -19,17 +19,17 @@ type BookmarkGetRequest struct {
 	Id string `uri:"id" binding:"required,uuid"`
 }
 
-func (s *BookmarksUsecase) Get(ctx context.Context, req *BookmarkGetRequest) (*domain.Bookmark, error) {
+func (u *BookmarksUsecase) Get(ctx context.Context, req *BookmarkGetRequest) (*domain.Bookmark, error) {
 	uuid, err := uuid.Parse(req.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.bookmarks.Get(ctx, &uuid)
+	return u.bookmarks.Get(ctx, &uuid)
 }
 
-func (s *BookmarksUsecase) List(ctx context.Context) ([]*domain.Bookmark, error) {
-	return s.bookmarks.List(ctx)
+func (u *BookmarksUsecase) List(ctx context.Context) ([]*domain.Bookmark, error) {
+	return u.bookmarks.List(ctx)
 }
 
 type BookmarkCreateRequest struct {
@@ -38,13 +38,13 @@ type BookmarkCreateRequest struct {
 	Description string `json:"description" binding:"required"`
 }
 
-func (s *BookmarksUsecase) Create(ctx context.Context, req *BookmarkCreateRequest) (*domain.Bookmark, error) {
+func (u *BookmarksUsecase) Create(ctx context.Context, req *BookmarkCreateRequest) (*domain.Bookmark, error) {
 	bookmark, err := domain.NewBookmark(req.Url, req.Title, req.Description)
 	if err != nil {
 		return nil, err
 	}
 
-	return s.bookmarks.Create(ctx, bookmark)
+	return u.bookmarks.Create(ctx, bookmark)
 }
 
 type BookmarkUpdateURIRequest struct {
@@ -62,13 +62,13 @@ type BookmarkUpdateRequest struct {
 	BookmarkUpdateJSONRequest
 }
 
-func (s *BookmarksUsecase) Update(ctx context.Context, req *BookmarkUpdateRequest) (*domain.Bookmark, error) {
+func (u *BookmarksUsecase) Update(ctx context.Context, req *BookmarkUpdateRequest) (*domain.Bookmark, error) {
 	uuid, err := uuid.Parse(req.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	before, err := s.bookmarks.Get(ctx, &uuid)
+	before, err := u.bookmarks.Get(ctx, &uuid)
 	if err != nil {
 		return nil, err
 	}
@@ -80,25 +80,25 @@ func (s *BookmarksUsecase) Update(ctx context.Context, req *BookmarkUpdateReques
 
 	after.ID = before.ID
 
-	return s.bookmarks.Update(ctx, after)
+	return u.bookmarks.Update(ctx, after)
 }
 
 type BookmarkDeleteRequest struct {
 	Id string `uri:"id" binding:"required,uuid"`
 }
 
-func (s *BookmarksUsecase) Delete(ctx context.Context, req *BookmarkDeleteRequest) (*domain.Bookmark, error) {
+func (u *BookmarksUsecase) Delete(ctx context.Context, req *BookmarkDeleteRequest) (*domain.Bookmark, error) {
 	uuid, err := uuid.Parse(req.Id)
 	if err != nil {
 		return nil, err
 	}
 
-	bookmark, err := s.bookmarks.Get(ctx, &uuid)
+	bookmark, err := u.bookmarks.Get(ctx, &uuid)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := s.bookmarks.Delete(ctx, bookmark); err != nil {
+	if err := u.bookmarks.Delete(ctx, bookmark); err != nil {
 		return nil, err
 	}
 

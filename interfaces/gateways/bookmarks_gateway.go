@@ -18,8 +18,8 @@ func NewBookmarksGateway(sqlc sqlc.Querier) usecases.BookmarksRepository {
 	return &bookmarksGateway{sqlc}
 }
 
-func (r *bookmarksGateway) Get(ctx context.Context, id *uuid.UUID) (*domain.Bookmark, error) {
-	record, err := r.db.GetBookmark(ctx, *id)
+func (g *bookmarksGateway) Get(ctx context.Context, id *uuid.UUID) (*domain.Bookmark, error) {
+	record, err := g.db.GetBookmark(ctx, *id)
 	if err != nil {
 		return nil, NewMissingEntityError(err)
 	}
@@ -36,8 +36,8 @@ func (r *bookmarksGateway) Get(ctx context.Context, id *uuid.UUID) (*domain.Book
 	return bookmark, err
 }
 
-func (r *bookmarksGateway) List(ctx context.Context) ([]*domain.Bookmark, error) {
-	records, err := r.db.ListBookmarks(ctx)
+func (g *bookmarksGateway) List(ctx context.Context) ([]*domain.Bookmark, error) {
+	records, err := g.db.ListBookmarks(ctx)
 	if err != nil {
 		return nil, NewMissingEntityError(err)
 	}
@@ -58,8 +58,8 @@ func (r *bookmarksGateway) List(ctx context.Context) ([]*domain.Bookmark, error)
 	return bookmarks, nil
 }
 
-func (r *bookmarksGateway) Create(ctx context.Context, bookmark *domain.Bookmark) (*domain.Bookmark, error) {
-	record, err := r.db.CreateBookmark(ctx, sqlc.CreateBookmarkParams{
+func (g *bookmarksGateway) Create(ctx context.Context, bookmark *domain.Bookmark) (*domain.Bookmark, error) {
+	record, err := g.db.CreateBookmark(ctx, sqlc.CreateBookmarkParams{
 		Url:         bookmark.Url,
 		Title:       bookmark.Title,
 		Description: bookmark.Description,
@@ -75,8 +75,8 @@ func (r *bookmarksGateway) Create(ctx context.Context, bookmark *domain.Bookmark
 	return bookmark, nil
 }
 
-func (r *bookmarksGateway) Update(ctx context.Context, bookmark *domain.Bookmark) (*domain.Bookmark, error) {
-	record, err := r.db.UpdateBookmark(ctx, sqlc.UpdateBookmarkParams{
+func (g *bookmarksGateway) Update(ctx context.Context, bookmark *domain.Bookmark) (*domain.Bookmark, error) {
+	record, err := g.db.UpdateBookmark(ctx, sqlc.UpdateBookmarkParams{
 		ID:          bookmark.ID,
 		Url:         bookmark.Url,
 		Title:       bookmark.Title,
@@ -93,8 +93,8 @@ func (r *bookmarksGateway) Update(ctx context.Context, bookmark *domain.Bookmark
 	return bookmark, err
 }
 
-func (r *bookmarksGateway) Delete(ctx context.Context, bookmark *domain.Bookmark) error {
-	err := r.db.DeleteBookmark(ctx, bookmark.ID)
+func (g *bookmarksGateway) Delete(ctx context.Context, bookmark *domain.Bookmark) error {
+	err := g.db.DeleteBookmark(ctx, bookmark.ID)
 	if err != nil {
 		return NewPersistenceError(err)
 	}

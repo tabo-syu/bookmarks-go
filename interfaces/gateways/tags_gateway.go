@@ -18,8 +18,8 @@ func NewTagsGateway(sqlc sqlc.Querier) usecases.TagsRepository {
 	return &tagsGateway{sqlc}
 }
 
-func (r *tagsGateway) Get(ctx context.Context, id *uuid.UUID) (*domain.Tag, error) {
-	record, err := r.db.GetTag(ctx, *id)
+func (g *tagsGateway) Get(ctx context.Context, id *uuid.UUID) (*domain.Tag, error) {
+	record, err := g.db.GetTag(ctx, *id)
 	if err != nil {
 		return nil, NewMissingEntityError(err)
 	}
@@ -35,8 +35,8 @@ func (r *tagsGateway) Get(ctx context.Context, id *uuid.UUID) (*domain.Tag, erro
 	return tag, err
 }
 
-func (r *tagsGateway) List(ctx context.Context) ([]*domain.Tag, error) {
-	records, err := r.db.ListTags(ctx)
+func (g *tagsGateway) List(ctx context.Context) ([]*domain.Tag, error) {
+	records, err := g.db.ListTags(ctx)
 	if err != nil {
 		return nil, NewMissingEntityError(err)
 	}
@@ -56,8 +56,8 @@ func (r *tagsGateway) List(ctx context.Context) ([]*domain.Tag, error) {
 	return tags, nil
 }
 
-func (r *tagsGateway) Create(ctx context.Context, tag *domain.Tag) (*domain.Tag, error) {
-	record, err := r.db.CreateTag(ctx, sqlc.CreateTagParams{
+func (g *tagsGateway) Create(ctx context.Context, tag *domain.Tag) (*domain.Tag, error) {
+	record, err := g.db.CreateTag(ctx, sqlc.CreateTagParams{
 		Name:  tag.Name,
 		Color: tag.Color,
 	})
@@ -72,8 +72,8 @@ func (r *tagsGateway) Create(ctx context.Context, tag *domain.Tag) (*domain.Tag,
 	return tag, nil
 }
 
-func (r *tagsGateway) Update(ctx context.Context, tag *domain.Tag) (*domain.Tag, error) {
-	record, err := r.db.UpdateTag(ctx, sqlc.UpdateTagParams{
+func (g *tagsGateway) Update(ctx context.Context, tag *domain.Tag) (*domain.Tag, error) {
+	record, err := g.db.UpdateTag(ctx, sqlc.UpdateTagParams{
 		ID:        tag.ID,
 		Name:      tag.Name,
 		Color:     tag.Color,
@@ -89,8 +89,8 @@ func (r *tagsGateway) Update(ctx context.Context, tag *domain.Tag) (*domain.Tag,
 	return tag, err
 }
 
-func (r *tagsGateway) Delete(ctx context.Context, tag *domain.Tag) error {
-	err := r.db.DeleteTag(ctx, tag.ID)
+func (g *tagsGateway) Delete(ctx context.Context, tag *domain.Tag) error {
+	err := g.db.DeleteTag(ctx, tag.ID)
 	if err != nil {
 		return NewPersistenceError(err)
 	}
