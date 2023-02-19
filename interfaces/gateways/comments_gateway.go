@@ -40,8 +40,8 @@ func (g *commentsGateway) List(ctx context.Context, id *uuid.UUID) ([]*domain.Co
 		return nil, NewMissingEntityError(err)
 	}
 
-	comments := []*domain.Comment{}
-	for _, record := range records {
+	comments := make([]*domain.Comment, len(records))
+	for i, record := range records {
 		comment := &domain.Comment{
 			ID:         record.ID,
 			BookmarkID: record.BookmarkID,
@@ -49,8 +49,7 @@ func (g *commentsGateway) List(ctx context.Context, id *uuid.UUID) ([]*domain.Co
 			CreatedAt:  record.CreatedAt,
 			UpdatedAt:  record.UpdatedAt,
 		}
-
-		comments = append(comments, comment)
+		comments[i] = comment
 	}
 
 	return comments, nil

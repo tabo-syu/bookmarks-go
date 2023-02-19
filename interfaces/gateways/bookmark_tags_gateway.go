@@ -23,8 +23,8 @@ func (g *bookmarkTagsGateway) List(ctx context.Context, id *uuid.UUID) ([]*domai
 		return nil, NewMissingEntityError(err)
 	}
 
-	tags := []*domain.Tag{}
-	for _, record := range records {
+	tags := make([]*domain.Tag, len(records))
+	for i, record := range records {
 		tag := &domain.Tag{
 			ID:        record.ID,
 			Name:      record.Name,
@@ -32,7 +32,7 @@ func (g *bookmarkTagsGateway) List(ctx context.Context, id *uuid.UUID) ([]*domai
 			CreatedAt: record.CreatedAt,
 			UpdatedAt: record.UpdatedAt,
 		}
-		tags = append(tags, tag)
+		tags[i] = tag
 	}
 
 	return tags, nil

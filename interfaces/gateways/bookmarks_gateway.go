@@ -42,8 +42,8 @@ func (g *bookmarksGateway) List(ctx context.Context) ([]*domain.Bookmark, error)
 		return nil, NewMissingEntityError(err)
 	}
 
-	bookmarks := []*domain.Bookmark{}
-	for _, record := range records {
+	bookmarks := make([]*domain.Bookmark, len(records))
+	for i, record := range records {
 		bookmark := &domain.Bookmark{
 			ID:          record.ID,
 			Url:         record.Url,
@@ -52,7 +52,7 @@ func (g *bookmarksGateway) List(ctx context.Context) ([]*domain.Bookmark, error)
 			CreatedAt:   record.CreatedAt,
 			UpdatedAt:   record.UpdatedAt,
 		}
-		bookmarks = append(bookmarks, bookmark)
+		bookmarks[i] = bookmark
 	}
 
 	return bookmarks, nil

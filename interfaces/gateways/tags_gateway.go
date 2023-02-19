@@ -41,8 +41,8 @@ func (g *tagsGateway) List(ctx context.Context) ([]*domain.Tag, error) {
 		return nil, NewMissingEntityError(err)
 	}
 
-	tags := []*domain.Tag{}
-	for _, record := range records {
+	tags := make([]*domain.Tag, len(records))
+	for i, record := range records {
 		tag := &domain.Tag{
 			ID:        record.ID,
 			Name:      record.Name,
@@ -50,7 +50,7 @@ func (g *tagsGateway) List(ctx context.Context) ([]*domain.Tag, error) {
 			CreatedAt: record.CreatedAt,
 			UpdatedAt: record.UpdatedAt,
 		}
-		tags = append(tags, tag)
+		tags[i] = tag
 	}
 
 	return tags, nil
