@@ -58,17 +58,17 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 		t := v1.Group("/tags")
 		{
 			t.GET("", tags.List)
-			t.GET("/:id", tags.Get)
+			t.GET("/:tag_id", tags.Get)
 			t.POST("", tags.Create)
-			t.PUT("/:id", tags.Update)
-			t.DELETE("/:id", tags.Delete)
+			t.PUT("/:tag_id", tags.Update)
+			t.DELETE("/:tag_id", tags.Delete)
 			// t.GET("/:tag_id/bookmarks/", tagBookmarks.List)
 		}
 
 		c := v1.Group("/comments")
 		{
-			c.GET("/:id", comments.Get)
-			c.DELETE("/:id", comments.Delete)
+			c.GET("/:comment_id", comments.Get)
+			c.DELETE("/:comment_id", comments.Delete)
 		}
 	}
 
