@@ -15,6 +15,12 @@ type BookmarksRepository interface {
 	Delete(context.Context, *domain.Bookmark) error
 }
 
+type BookmarkTagsRepository interface {
+	List(ctx context.Context, bookmarkID *uuid.UUID) ([]*domain.Tag, error)
+	Add(ctx context.Context, bookmarkID *uuid.UUID, tagID *uuid.UUID) error
+	Remove(ctx context.Context, bookmarkID *uuid.UUID, tagID *uuid.UUID) error
+}
+
 type TagsRepository interface {
 	Get(context.Context, *uuid.UUID) (*domain.Tag, error)
 	List(context.Context) ([]*domain.Tag, error)

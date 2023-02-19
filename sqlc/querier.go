@@ -11,6 +11,7 @@ import (
 )
 
 type Querier interface {
+	AddTagToBookmark(ctx context.Context, arg AddTagToBookmarkParams) error
 	CreateBookmark(ctx context.Context, arg CreateBookmarkParams) (Bookmark, error)
 	CreateComment(ctx context.Context, arg CreateCommentParams) (Comment, error)
 	CreateTag(ctx context.Context, arg CreateTagParams) (Tag, error)
@@ -19,12 +20,14 @@ type Querier interface {
 	DeleteTag(ctx context.Context, id uuid.UUID) error
 	FindBookmarksByTags(ctx context.Context, ids []uuid.UUID) ([]FindBookmarksByTagsRow, error)
 	FindCommentsByBookmark(ctx context.Context, ids []uuid.UUID) ([]Comment, error)
+	FindTagsByBookmark(ctx context.Context, bookmarkID uuid.UUID) ([]Tag, error)
 	GetBookmark(ctx context.Context, id uuid.UUID) (Bookmark, error)
 	GetComment(ctx context.Context, id uuid.UUID) (Comment, error)
 	GetTag(ctx context.Context, id uuid.UUID) (Tag, error)
 	ListBookmarks(ctx context.Context) ([]Bookmark, error)
 	ListComments(ctx context.Context, bookmarkID uuid.UUID) ([]Comment, error)
 	ListTags(ctx context.Context) ([]Tag, error)
+	RemoveTagFromBookmark(ctx context.Context, arg RemoveTagFromBookmarkParams) error
 	UpdateBookmark(ctx context.Context, arg UpdateBookmarkParams) (Bookmark, error)
 	UpdateTag(ctx context.Context, arg UpdateTagParams) (Tag, error)
 }

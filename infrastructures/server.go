@@ -12,24 +12,27 @@ import (
 )
 
 func NewServer(sqlc *sqlc.Queries) *http.Server {
+	bookmarksGateway := gateways.NewBookmarksGateway(sqlc)
+	tagsGateway := gateways.NewTagsGateway(sqlc)
+	commentsGateway := gateways.NewCommentsGateway(sqlc)
+	bookmarkTagsGateway := gateways.NewBookmarkTagsGateway(sqlc)
+
 	webapiPresenter := presenters.NewWebAPIPresenter()
 
 	bookmarks := controllers.NewBookmarksController(
-		usecases.NewBookmarksUsecase(
-			gateways.NewBookmarksGateway(sqlc),
-		),
+		usecases.NewBookmarksUsecase(bookmarksGateway),
 		webapiPresenter,
 	)
 	tags := controllers.NewTagsController(
-		usecases.NewTagsUsecase(
-			gateways.NewTagsGateway(sqlc),
-		),
+		usecases.NewTagsUsecase(tagsGateway),
 		webapiPresenter,
 	)
 	comments := controllers.NewCommentsController(
-		usecases.NewCommentsUsecase(
-			gateways.NewCommentsGateway(sqlc),
-		),
+		usecases.NewCommentsUsecase(commentsGateway),
+		webapiPresenter,
+	)
+	bookmarkTags := controllers.NewBookmarkTagsController(
+		usecases.NewBookmarkTagsUsecase(bookmarksGateway, tagsGateway, bookmarkTagsGateway),
 		webapiPresenter,
 	)
 
@@ -44,6 +47,10 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 			b.PUT("/:bookmark_id", bookmarks.Update)
 			b.DELETE("/:bookmark_id", bookmarks.Delete)
 
+			b.GET("/:bookmark_id/tags", bookmarkTags.List)
+			b.POST("/:bookmark_id/tags/:tag_id", bookmarkTags.Add)
+			b.DELETE("/:bookmark_id/tags/:tag_id", bookmarkTags.Remove)
+
 			b.GET("/:bookmark_id/comments", comments.List)
 			b.POST("/:bookmark_id/comments", comments.Create)
 		}
@@ -55,6 +62,7 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 			t.POST("", tags.Create)
 			t.PUT("/:id", tags.Update)
 			t.DELETE("/:id", tags.Delete)
+			// t.GET("/:tag_id/bookmarks/", tagBookmarks.List)
 		}
 
 		c := v1.Group("/comments")

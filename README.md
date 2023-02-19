@@ -26,6 +26,12 @@ $ curl -X PUT http://localhost:8080/v1/bookmarks/{bookmark_id} -d '{"url":"https
 
 # DeleteBookmark
 $ curl -X DELETE http://localhost:8080/v1/bookmarks/{bookmark_id} | jq -r .
+
+# AddTagToBookmark
+$ curl -X POST http://localhost:8080/v1/bookmarks/{bookmark_id}/tags/{tag_id} | jq -r .
+
+# DeleteTagFromBookmark
+$ curl -X DELETE http://localhost:8080/v1/bookmarks/{bookmark_id}/tags/{tag_id} | jq -r .
 ```
 
 ### tags
@@ -45,6 +51,9 @@ $ curl -X PUT http://localhost:8080/v1/tags/{tag_id} -d '{"name":"tag name","col
 
 # DeleteTag
 $ curl -X DELETE http://localhost:8080/v1/tags/{tag_id} | jq -r .
+
+# FindTagsByBookmark
+$ curl http://localhost:8080/v1/bookmarks/{bookmark_id}/tags | jq -r .
 ```
 
 ### comments
@@ -57,7 +66,7 @@ $ curl http://localhost:8080/v1/bookmarks/{bookmark_id}/comments | jq -r .
 $ curl http://localhost:8080/v1/comments/{comment_id} | jq -r .
 
 # CreateComment
-$ curl -X POST http://localhost:8080/v1/bookmarks/{bookmark_id} -d '{"body":"comment"}' -v | jq -r .
+$ curl -X POST http://localhost:8080/v1/bookmarks/{bookmark_id}/comments -d '{"body":"comment"}' -v | jq -r .
 
 # DeleteComment
 $ curl -X DELETE http://localhost:8080/v1/comments/{comment_id} | jq -r .

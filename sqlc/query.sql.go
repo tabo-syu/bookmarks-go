@@ -14,6 +14,23 @@ import (
 	"github.com/lib/pq"
 )
 
+const addTagToBookmark = `-- name: AddTagToBookmark :exec
+INSERT INTO bookmark_has_tags
+  (bookmark_id, tag_id)
+VALUES
+  ($1, $2)
+`
+
+type AddTagToBookmarkParams struct {
+	BookmarkID uuid.UUID
+	TagID      uuid.UUID
+}
+
+func (q *Queries) AddTagToBookmark(ctx context.Context, arg AddTagToBookmarkParams) error {
+	_, err := q.db.ExecContext(ctx, addTagToBookmark, arg.BookmarkID, arg.TagID)
+	return err
+}
+
 const createBookmark = `-- name: CreateBookmark :one
 INSERT INTO bookmarks
   (url, title, description)
@@ -215,6 +232,52 @@ func (q *Queries) FindCommentsByBookmark(ctx context.Context, ids []uuid.UUID) (
 			&i.ID,
 			&i.BookmarkID,
 			&i.Body,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const findTagsByBookmark = `-- name: FindTagsByBookmark :many
+SELECT
+  t.id,
+  t.name,
+  t.color,
+  t.created_at,
+  t.updated_at
+FROM
+  tags AS t
+LEFT JOIN bookmark_has_tags AS bht ON t.id = bht.tag_id
+LEFT JOIN bookmarks AS b ON bht.bookmark_id = b.id
+WHERE
+  bht.bookmark_id = $1
+ORDER BY
+  b.created_at DESC
+`
+
+func (q *Queries) FindTagsByBookmark(ctx context.Context, bookmarkID uuid.UUID) ([]Tag, error) {
+	rows, err := q.db.QueryContext(ctx, findTagsByBookmark, bookmarkID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []Tag{}
+	for rows.Next() {
+		var i Tag
+		if err := rows.Scan(
+			&i.ID,
+			&i.Name,
+			&i.Color,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -445,6 +508,23 @@ func (q *Queries) ListTags(ctx context.Context) ([]Tag, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const removeTagFromBookmark = `-- name: RemoveTagFromBookmark :exec
+DELETE FROM 
+  bookmark_has_tags
+WHERE
+  bookmark_id = $1 AND tag_id =  $2
+`
+
+type RemoveTagFromBookmarkParams struct {
+	BookmarkID uuid.UUID
+	TagID      uuid.UUID
+}
+
+func (q *Queries) RemoveTagFromBookmark(ctx context.Context, arg RemoveTagFromBookmarkParams) error {
+	_, err := q.db.ExecContext(ctx, removeTagFromBookmark, arg.BookmarkID, arg.TagID)
+	return err
 }
 
 const updateBookmark = `-- name: UpdateBookmark :one
