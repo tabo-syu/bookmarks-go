@@ -26,12 +26,6 @@ $ curl -X PUT http://localhost:8080/v1/bookmarks/{bookmark_id} -d '{"url":"https
 
 # DeleteBookmark
 $ curl -X DELETE http://localhost:8080/v1/bookmarks/{bookmark_id} | jq -r .
-
-# AddTagToBookmark
-$ curl -X POST http://localhost:8080/v1/bookmarks/{bookmark_id}/tags/{tag_id} | jq -r .
-
-# DeleteTagFromBookmark
-$ curl -X DELETE http://localhost:8080/v1/bookmarks/{bookmark_id}/tags/{tag_id} | jq -r .
 ```
 
 ### tags
@@ -54,6 +48,12 @@ $ curl -X DELETE http://localhost:8080/v1/tags/{tag_id} | jq -r .
 
 # FindTagsByBookmark
 $ curl http://localhost:8080/v1/bookmarks/{bookmark_id}/tags | jq -r .
+
+# AddTagToBookmark
+$ curl -X POST http://localhost:8080/v1/bookmarks/{bookmark_id}/tags/{tag_id} | jq -r .
+
+# DeleteTagFromBookmark
+$ curl -X DELETE http://localhost:8080/v1/bookmarks/{bookmark_id}/tags/{tag_id} | jq -r .
 ```
 
 ### comments
