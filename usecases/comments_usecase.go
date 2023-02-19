@@ -16,11 +16,11 @@ func NewCommentsUsecase(comments CommentsRepository) *CommentsUsecase {
 }
 
 type CommentGetRequest struct {
-	Id string `uri:"id" binding:"required,uuid"`
+	CommentID string `uri:"id" binding:"required,uuid"`
 }
 
 func (u *CommentsUsecase) Get(ctx context.Context, req *CommentGetRequest) (*domain.Comment, error) {
-	uuid, err := uuid.Parse(req.Id)
+	uuid, err := uuid.Parse(req.CommentID)
 	if err != nil {
 		return nil, err
 	}
@@ -69,11 +69,11 @@ func (u *CommentsUsecase) Create(ctx context.Context, req *CommentCreateRequest)
 }
 
 type CommentDeleteRequest struct {
-	ID string `uri:"id" binding:"required,uuid"`
+	CommentID string `uri:"id" binding:"required,uuid"`
 }
 
 func (u *CommentsUsecase) Delete(ctx context.Context, req *CommentDeleteRequest) (*domain.Comment, error) {
-	uuid, err := uuid.Parse(req.ID)
+	uuid, err := uuid.Parse(req.CommentID)
 	if err != nil {
 		return nil, err
 	}

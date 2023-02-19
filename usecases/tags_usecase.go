@@ -16,11 +16,11 @@ func NewTagsUsecase(tags TagsRepository) *TagsUsecase {
 }
 
 type TagGetRequest struct {
-	Id string `uri:"id" binding:"required,uuid"`
+	TagID string `uri:"id" binding:"required,uuid"`
 }
 
 func (u *TagsUsecase) Get(ctx context.Context, req *TagGetRequest) (*domain.Tag, error) {
-	uuid, err := uuid.Parse(req.Id)
+	uuid, err := uuid.Parse(req.TagID)
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +47,7 @@ func (u *TagsUsecase) Create(ctx context.Context, req *TagCreateRequest) (*domai
 }
 
 type TagUpdateURIRequest struct {
-	Id string `uri:"id" binding:"required,uuid"`
+	TagID string `uri:"id" binding:"required,uuid"`
 }
 
 type TagUpdateJSONRequest struct {
@@ -61,7 +61,7 @@ type TagUpdateRequest struct {
 }
 
 func (u *TagsUsecase) Update(ctx context.Context, req *TagUpdateRequest) (*domain.Tag, error) {
-	uuid, err := uuid.Parse(req.Id)
+	uuid, err := uuid.Parse(req.TagID)
 	if err != nil {
 		return nil, err
 	}
@@ -82,11 +82,11 @@ func (u *TagsUsecase) Update(ctx context.Context, req *TagUpdateRequest) (*domai
 }
 
 type TagDeleteRequest struct {
-	Id string `uri:"id" binding:"required,uuid"`
+	TagID string `uri:"id" binding:"required,uuid"`
 }
 
 func (u *TagsUsecase) Delete(ctx context.Context, req *TagDeleteRequest) (*domain.Tag, error) {
-	uuid, err := uuid.Parse(req.Id)
+	uuid, err := uuid.Parse(req.TagID)
 	if err != nil {
 		return nil, err
 	}
