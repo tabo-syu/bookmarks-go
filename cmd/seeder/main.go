@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"log"
 	"os"
@@ -13,10 +12,10 @@ import (
 
 func main() {
 	if err := run(); err != nil {
-		log.Fatalf("migration failed: %s", err.Error())
+		log.Fatalf("seeding failed: %s", err.Error())
 	}
 
-	log.Print("migration succeeded!")
+	log.Print("seeding succeeded!")
 }
 
 func run() error {
@@ -31,20 +30,18 @@ func run() error {
 		return err
 	}
 
-	schema, err := os.Open(filepath.Join(wd, "sqlc", "schema.sql"))
+	seed, err := os.Open(filepath.Join(wd, "cmd", "seeder", "seed.sql"))
 	if err != nil {
 		return err
 	}
-	defer schema.Close()
+	defer seed.Close()
 
-	initializeQuery := "drop schema public cascade; create schema public;"
-	migrationQuery, err := io.ReadAll(schema)
+	seedQuery, err := io.ReadAll(seed)
 	if err != nil {
 		return err
 	}
-	query := fmt.Sprintf("%s%s", initializeQuery, migrationQuery)
 
-	_, err = db.ExecContext(context.Background(), query)
+	_, err = db.ExecContext(context.Background(), string(seedQuery))
 	if err != nil {
 		return err
 	}

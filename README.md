@@ -4,6 +4,7 @@
 $ git clone https://github.com/tabo-syu/bookmarks.git
 $ cd bookmarks
 $ go run cmd/migrator/main.go
+$ go run cmd/seeder/main.go
 $ go run cmd/server/main.go
 ```
 
