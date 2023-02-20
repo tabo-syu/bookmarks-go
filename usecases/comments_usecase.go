@@ -29,11 +29,11 @@ func (u *CommentsUsecase) Get(ctx context.Context, req *CommentGetRequest) (*dom
 }
 
 type CommentsListRequest struct {
-	BookmarkId string `uri:"bookmark_id" binding:"required,uuid"`
+	BookmarkID string `uri:"bookmark_id" binding:"required,uuid"`
 }
 
 func (u *CommentsUsecase) List(ctx context.Context, req *CommentsListRequest) ([]*domain.Comment, error) {
-	uuid, err := uuid.Parse(req.BookmarkId)
+	uuid, err := uuid.Parse(req.BookmarkID)
 	if err != nil {
 		return nil, err
 	}
