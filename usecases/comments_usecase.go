@@ -38,6 +38,10 @@ func (u *CommentsUsecase) List(ctx context.Context, req *CommentsListRequest) ([
 		return nil, err
 	}
 
+	if _, err := u.comments.Get(ctx, &uuid); err != nil {
+		return nil, err
+	}
+
 	return u.comments.List(ctx, &uuid)
 }
 

@@ -27,6 +27,10 @@ func (u *BookmarkTagsUsecase) List(ctx context.Context, req *BookmarkTagsListReq
 		return nil, err
 	}
 
+	if _, err := u.bookmarks.Get(ctx, &bookmarkID); err != nil {
+		return nil, err
+	}
+
 	return u.bookmarkTags.List(ctx, &bookmarkID)
 }
 
