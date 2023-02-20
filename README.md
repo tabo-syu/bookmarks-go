@@ -26,6 +26,9 @@ $ curl -X PUT http://localhost:8080/v1/bookmarks/{bookmark_id} -d '{"url":"https
 
 # DeleteBookmark
 $ curl -X DELETE http://localhost:8080/v1/bookmarks/{bookmark_id} | jq -r .
+
+# FindBookmarksByTag
+$ curl http://localhost:8080/v1/tags/{tag_id}/bookmarks | jq -r .
 ```
 
 ### tags

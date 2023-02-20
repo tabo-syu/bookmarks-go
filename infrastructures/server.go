@@ -16,6 +16,7 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 	tagsGateway := gateways.NewTagsGateway(sqlc)
 	commentsGateway := gateways.NewCommentsGateway(sqlc)
 	bookmarkTagsGateway := gateways.NewBookmarkTagsGateway(sqlc)
+	tagBookmarksGateway := gateways.NewTagBookmarksGateway(sqlc)
 
 	webapiPresenter := presenters.NewWebAPIPresenter()
 
@@ -33,6 +34,10 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 	)
 	bookmarkTags := controllers.NewBookmarkTagsController(
 		usecases.NewBookmarkTagsUsecase(bookmarksGateway, tagsGateway, bookmarkTagsGateway),
+		webapiPresenter,
+	)
+	tagBookmarks := controllers.NewTagBookmarksController(
+		usecases.NewTagBookmarksUsecase(tagsGateway, tagBookmarksGateway),
 		webapiPresenter,
 	)
 
@@ -62,7 +67,8 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 			t.POST("", tags.Create)
 			t.PUT("/:tag_id", tags.Update)
 			t.DELETE("/:tag_id", tags.Delete)
-			// t.GET("/:tag_id/bookmarks/", tagBookmarks.List)
+
+			t.GET("/:tag_id/bookmarks", tagBookmarks.List)
 		}
 
 		c := v1.Group("/comments")

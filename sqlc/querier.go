@@ -18,8 +18,7 @@ type Querier interface {
 	DeleteBookmark(ctx context.Context, id uuid.UUID) error
 	DeleteComment(ctx context.Context, id uuid.UUID) error
 	DeleteTag(ctx context.Context, id uuid.UUID) error
-	FindBookmarksByTags(ctx context.Context, ids []uuid.UUID) ([]FindBookmarksByTagsRow, error)
-	FindCommentsByBookmark(ctx context.Context, ids []uuid.UUID) ([]Comment, error)
+	FindBookmarksByTag(ctx context.Context, tagID uuid.UUID) ([]Bookmark, error)
 	FindTagsByBookmark(ctx context.Context, bookmarkID uuid.UUID) ([]Tag, error)
 	GetBookmark(ctx context.Context, id uuid.UUID) (Bookmark, error)
 	GetComment(ctx context.Context, id uuid.UUID) (Comment, error)

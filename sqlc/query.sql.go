@@ -7,11 +7,9 @@ package sqlc
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/lib/pq"
 )
 
 const addTagToBookmark = `-- name: AddTagToBookmark :exec
@@ -147,7 +145,7 @@ func (q *Queries) DeleteTag(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
-const findBookmarksByTags = `-- name: FindBookmarksByTags :many
+const findBookmarksByTag = `-- name: FindBookmarksByTag :many
 SELECT
   b.id,
   b.url,
@@ -156,82 +154,29 @@ SELECT
   b.created_at,
   b.updated_at
 FROM
-  bookmark_has_tags AS bht
-LEFT JOIN bookmarks AS b ON b.id = bht.bookmark_id
-LEFT JOIN tags AS t ON t.id = bht.tag_id
+  bookmarks AS b
+LEFT JOIN bookmark_has_tags AS bht ON b.id = bht.bookmark_id
+LEFT JOIN tags AS t ON bht.tag_id = t.id
 WHERE
-  bht.tag_id = ANY($1::UUID[])
+  bht.tag_id = $1
 ORDER BY
   b.created_at DESC
 `
 
-type FindBookmarksByTagsRow struct {
-	ID          uuid.NullUUID
-	Url         sql.NullString
-	Title       sql.NullString
-	Description sql.NullString
-	CreatedAt   sql.NullTime
-	UpdatedAt   sql.NullTime
-}
-
-func (q *Queries) FindBookmarksByTags(ctx context.Context, ids []uuid.UUID) ([]FindBookmarksByTagsRow, error) {
-	rows, err := q.db.QueryContext(ctx, findBookmarksByTags, pq.Array(ids))
+func (q *Queries) FindBookmarksByTag(ctx context.Context, tagID uuid.UUID) ([]Bookmark, error) {
+	rows, err := q.db.QueryContext(ctx, findBookmarksByTag, tagID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	items := []FindBookmarksByTagsRow{}
+	items := []Bookmark{}
 	for rows.Next() {
-		var i FindBookmarksByTagsRow
+		var i Bookmark
 		if err := rows.Scan(
 			&i.ID,
 			&i.Url,
 			&i.Title,
 			&i.Description,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const findCommentsByBookmark = `-- name: FindCommentsByBookmark :many
-SELECT
-  id,
-  bookmark_id,
-  body,
-  created_at,
-  updated_at
-FROM
-  comments
-WHERE
-  bookmark_id = ANY($1::UUID[])
-ORDER BY
-  created_at DESC
-`
-
-func (q *Queries) FindCommentsByBookmark(ctx context.Context, ids []uuid.UUID) ([]Comment, error) {
-	rows, err := q.db.QueryContext(ctx, findCommentsByBookmark, pq.Array(ids))
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	items := []Comment{}
-	for rows.Next() {
-		var i Comment
-		if err := rows.Scan(
-			&i.ID,
-			&i.BookmarkID,
-			&i.Body,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {

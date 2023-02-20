@@ -26,7 +26,7 @@ FROM
 ORDER BY
   created_at DESC;
 
--- name: FindBookmarksByTags :many
+-- name: FindBookmarksByTag :many
 SELECT
   b.id,
   b.url,
@@ -35,11 +35,11 @@ SELECT
   b.created_at,
   b.updated_at
 FROM
-  bookmark_has_tags AS bht
-LEFT JOIN bookmarks AS b ON b.id = bht.bookmark_id
-LEFT JOIN tags AS t ON t.id = bht.tag_id
+  bookmarks AS b
+LEFT JOIN bookmark_has_tags AS bht ON b.id = bht.bookmark_id
+LEFT JOIN tags AS t ON bht.tag_id = t.id
 WHERE
-  bht.tag_id = ANY(@ids::UUID[])
+  bht.tag_id = $1
 ORDER BY
   b.created_at DESC;
 
@@ -184,17 +184,3 @@ DELETE FROM
   comments
 WHERE
   id = $1;
-
--- name: FindCommentsByBookmark :many
-SELECT
-  id,
-  bookmark_id,
-  body,
-  created_at,
-  updated_at
-FROM
-  comments
-WHERE
-  bookmark_id = ANY(@ids::UUID[])
-ORDER BY
-  created_at DESC;
