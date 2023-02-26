@@ -40,9 +40,12 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 		usecases.NewTagBookmarksUsecase(tagsGateway, tagBookmarksGateway),
 		webapiPresenter,
 	)
+	authentication := controllers.NewAuthenticationMiddlewareController(
+		usecases.NewAuthenticationMiddlewareUsecase(),
+	)
 
 	router := gin.Default()
-	v1 := router.Group("/v1")
+	v1 := router.Group("/v1", authentication.Authenticate)
 	{
 		b := v1.Group("/bookmarks")
 		{
