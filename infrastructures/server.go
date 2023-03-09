@@ -1,8 +1,6 @@
 package infrastructures
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
 	"github.com/tabo-syu/bookmarks/interfaces/controllers"
 	"github.com/tabo-syu/bookmarks/interfaces/gateways"
@@ -11,7 +9,7 @@ import (
 	"github.com/tabo-syu/bookmarks/usecases"
 )
 
-func NewServer(sqlc *sqlc.Queries) *http.Server {
+func NewServer(sqlc *sqlc.Queries) *gin.Engine {
 	bookmarksGateway := gateways.NewBookmarksGateway(sqlc)
 	tagsGateway := gateways.NewTagsGateway(sqlc)
 	commentsGateway := gateways.NewCommentsGateway(sqlc)
@@ -81,8 +79,5 @@ func NewServer(sqlc *sqlc.Queries) *http.Server {
 		}
 	}
 
-	return &http.Server{
-		Addr:    ":8080",
-		Handler: router,
-	}
+	return router
 }

@@ -22,7 +22,8 @@ func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), syscall.SIGINT, syscall.SIGTERM)
 	defer stop()
 
-	server := infrastructures.NewServer(sqlc)
+	gin := infrastructures.NewServer(sqlc)
+	server := &http.Server{Addr: ":8080", Handler: gin}
 	go func() {
 		if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			log.Fatalf("listen: %s\n", err)
