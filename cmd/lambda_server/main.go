@@ -16,10 +16,10 @@ var ginLambda *ginadapter.GinLambda
 func init() {
 	log.Printf("Gin cold start")
 	db, err := infrastructures.NewSQLHandler()
-	sqlc := sqlc.New(db)
 	if err != nil {
 		log.Fatal("DB connection failed", err)
 	}
+	sqlc := sqlc.New(db)
 
 	server := infrastructures.NewServer(sqlc)
 	ginLambda = ginadapter.New(server)
