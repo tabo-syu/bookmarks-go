@@ -1,0 +1,411 @@
+openapi: 3.1.0
+info:
+  title: Bookmark API
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/v1
+paths:
+  /bookmarks:
+    get:
+      summary: ListBookmarks
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bookmark'
+    post:
+      summary: CreateBookmark
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookmarkInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookmark'
+
+  /bookmarks/{bookmark_id}:
+    get:
+      summary: GetBookmark
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: bookmark_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookmark'
+    put:
+      summary: UpdateBookmark
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: bookmark_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BookmarkInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Bookmark'
+    delete:
+      summary: DeleteBookmark
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: bookmark_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+  
+  /bookmarks/{bookmark_id}/tags:
+    get:
+      summary: FindTagsByBookmark
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: bookmark_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+  
+  /bookmarks/{bookmark_id}/tags/{tag_id}:
+    post:
+      summary: AddTagToBookmark
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: bookmark_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: tag_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+    delete:
+      summary: DeleteTagFromBookmark
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: bookmark_id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: tag_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+  
+  /bookmarks/{bookmark_id}/comments:
+    get:
+      summary: ListComments
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: bookmark_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+    post:
+      summary: CreateComment
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: bookmark_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CommentInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+  
+  /tags:
+    get:
+      summary: ListTags
+      security:
+        - ApiKeyAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+    post:
+      summary: CreateTag
+      security:
+        - ApiKeyAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagInput'
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+  
+  /tags/{tag_id}:
+    get:
+      summary: GetTag
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: tag_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+    put:
+      summary: UpdateTag
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: tag_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagInput'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+    delete:
+      summary: DeleteTag
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: tag_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+  
+  /tags/{tag_id}/bookmarks:
+    get:
+      summary: FindBookmarksByTag
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: tag_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Bookmark'
+
+  /comments/{comment_id}:
+    get:
+      summary: GetComment
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Comment'
+    delete:
+      summary: DeleteComment
+      security:
+        - ApiKeyAuth: []
+      parameters:
+        - name: comment_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: No Content
+
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: Token
+  schemas:
+    Bookmark:
+      type: object
+      properties:
+        id:
+          type: string
+        url:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - id
+        - url
+        - title
+    BookmarkInput:
+      type: object
+      properties:
+        url:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+      required:
+        - url
+        - title
+    Tag:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        color:
+          type: string
+      required:
+        - id
+        - name
+        - color
+    TagInput:
+      type: object
+      properties:
+        name:
+          type: string
+        color:
+          type: string
+      required:
+        - name
+        - color
+    Comment:
+      type: object
+      properties:
+        id:
+          type: string
+        body:
+          type: string
+      required:
+        - id
+        - body
+    CommentInput:
+      type: object
+      properties:
+        body:
+          type: string
+      required:
+        - body

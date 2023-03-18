@@ -48,12 +48,14 @@ func NewServer(sqlc *sqlc.Queries) *gin.Engine {
 		b := v1.Group("/bookmarks")
 		{
 			b.GET("", bookmarks.List)
-			b.GET("/:bookmark_id", bookmarks.Get)
 			b.POST("", bookmarks.Create)
+
+			b.GET("/:bookmark_id", bookmarks.Get)
 			b.PUT("/:bookmark_id", bookmarks.Update)
 			b.DELETE("/:bookmark_id", bookmarks.Delete)
 
 			b.GET("/:bookmark_id/tags", bookmarkTags.List)
+
 			b.POST("/:bookmark_id/tags/:tag_id", bookmarkTags.Add)
 			b.DELETE("/:bookmark_id/tags/:tag_id", bookmarkTags.Remove)
 
@@ -64,8 +66,9 @@ func NewServer(sqlc *sqlc.Queries) *gin.Engine {
 		t := v1.Group("/tags")
 		{
 			t.GET("", tags.List)
-			t.GET("/:tag_id", tags.Get)
 			t.POST("", tags.Create)
+
+			t.GET("/:tag_id", tags.Get)
 			t.PUT("/:tag_id", tags.Update)
 			t.DELETE("/:tag_id", tags.Delete)
 
